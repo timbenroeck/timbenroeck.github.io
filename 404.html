@@ -25,6 +25,30 @@
             }
         }
 
+        switch (location.pathname) {
+            case "/":
+                // Code to execute when the pathname is "/"
+                location.replace('https://www.linkedin.com/in/timbenroeck/');
+                break;
+            case "/calendar":
+                // Code to execute when the pathname is "/calendar"
+                location.replace('https://calendar.google.com/calendar/embed?src=tim.benroeck%40snowflake.com&ctz=America%2FLos_Angeles');
+                break;
+            case "/meet":
+                // Code to execute when the pathname is "/calendar"
+                location.replace('https://calendar.app.google/PYgBUJEQJCEUkEsw7');
+                break;
+            case "/ics":
+                // Code to execute when the pathname is "/ics"
+                location.replace('https://calendar.google.com/calendar/ical/tim.benroeck%40snowflake.com/public/basic.ics')
+                break;
+            default:
+                // Code to execute when none of the above cases match
+                location.replace('https://www.linkedin.com/in/timbenroeck/');
+                break;
+        }
+
+
         redirect();
     </script>
 </head>
