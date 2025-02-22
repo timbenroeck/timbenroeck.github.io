@@ -202,7 +202,7 @@ body {
   }
 
   .profile-role {
-    font-size: 1rem;
+    font-size: .8rem;
     font-weight: 600;
     color: var(--text-color-dark);
     margin-bottom: 0.75rem;
