@@ -1,147 +1,228 @@
 /* General Reset & Variables */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
-    --bg-color: #0e3b43;
-    --card-color: #ffffff;
-    --text-color-dark: #312509;
-    --text-color-light: #ffffff;
-    --accent-color: #a3bbad;
-    --font-family: 'Inter', sans-serif;
+  --bg-color: #0e3b43;
+  --card-color: #ffffff;
+  --text-color-dark: #312509;
+  --text-color-light: #ffffff;
+  --accent-color: #a3bbad;
+  --font-family: "Inter", sans-serif;
 }
 
 /* Body Styling */
 body {
-    background-color: var(--bg-color);
-    font-family: var(--font-family);
-    color: var(--text-color-light);
+  background-color: var(--bg-color);
+  font-family: var(--font-family);
+  color: var(--text-color-light);
 }
 
 /* Main Container */
 .container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 100vh;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    gap: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  gap: 2rem;
 }
 
 /* Profile Card */
 .profile-card {
-    background-color: var(--card-color);
-    width: 280px;
-    border-radius: 16px;
-    padding: 2rem;
-    text-align: left;
-    /* Left-align text */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  background-color: var(--card-color);
+  width: 280px;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: left;
+  /* Left-align text */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .profile-image-wrapper {
-    width: 180px;
-    height: 220px;
-    background-color: var(--accent-color);
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    overflow: hidden;
+  width: 180px;
+  height: 220px;
+  background-color: var(--accent-color);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
 }
 
 .profile-image {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .profile-name {
-    font-size: 1.8rem;
-    color: var(--text-color-dark);
-    margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  color: var(--text-color-dark);
+  margin-bottom: 0.5rem;
 }
 
 .profile-role {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-color-dark);
-    margin-bottom: 1rem;
-    opacity: 0.8;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color-dark);
+  margin-bottom: 1rem;
+  opacity: 0.8;
 }
 
 .profile-description {
-    font-size: 1rem;
-    color: var(--text-color-dark);
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
-}
-
-/* Social Links */
-.profile-links {
-    display: flex;
-    justify-content: flex-start;
-    /* Left align social icons */
-    gap: 1rem;
-    margin-top: 1rem;
-}
-
-.profile-links a img {
-    width: 28px;
-    height: 28px;
-    transition: transform 0.2s ease;
-}
-
-.profile-links a:hover img {
-    transform: scale(1.1);
+  font-size: 1rem;
+  color: var(--text-color-dark);
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
 }
 
 /* Main Content */
 .main-content {
-    flex: 1;
-    padding: 1rem;
+  flex: 1;
+  padding: 1rem;
 }
 
 .title {
-    font-size: 2.8rem;
-    font-weight: 700;
-    line-height: 1.2;
-    text-transform: uppercase;
+  font-size: 2.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .title-highlight {
-    color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 .subtitle {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-width: 600px;
-    margin-bottom: 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: 2rem;
 }
 
 /* Call-to-Action */
 .cta {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 .cta-button {
-    display: inline-block;
-    background-color: var(--accent-color);
-    color: var(--text-color-dark);
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: background 0.3s ease;
+  display: inline-block;
+  background-color: var(--accent-color);
+  color: var(--text-color-dark);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background 0.3s ease;
 }
 
 .cta-button:hover {
-    background-color: var(--text-color-dark);
-    color: var(--text-color-light);
+  background-color: var(--text-color-dark);
+  color: var(--text-color-light);
+}
+/* Footer Styling */
+.footer {
+  width: 100%; /* Full width to avoid floating issues */
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem 0;
+  margin-top: 2rem; /* Creates spacing between content and footer */
+  background-color: var(--card-color);
+  border-top: 2px solid var(--accent-color); /* Optional: Adds a subtle separator */
+  text-align: center;
+}
+
+/* Social Links */
+.profile-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+}
+
+.profile-links a img {
+  width: 32px;
+  height: 32px;
+  transition: transform 0.2s ease;
+}
+
+.profile-links a:hover img {
+  transform: scale(1.1);
+}
+
+@media (max-width: 900px) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 90%;
+    max-width: 600px;
+    padding: 1.5rem;
+    flex: 1;
+  }
+
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 1rem; /* Reduce inner spacing */
+    position: relative;
+  }
+
+  .profile-image-wrapper {
+    display: none;
+    width: 120px;
+    height: 150px;
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .profile-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-name {
+    font-size: 1.8rem;
+    color: var(--text-color-dark);
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-role {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
+  }
+
+  .profile-description {
+    font-size: 1rem;
+    color: var(--text-color-dark);
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+    /* Social Links */
+  .profile-links {
+    display: flex;
+    justify-content: center;
+    gap: .75rem;
+    margin-bottom: 0.25rem;
+  }
+
+
 }
