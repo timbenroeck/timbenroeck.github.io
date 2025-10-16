@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnowPac - Snowflake Data Collection Adventure</title>
+    <link rel="stylesheet" href="snowpac-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>❄️ SNOWPAC ❄️</h1>
+            <h2>Snowflake Data Collection Adventure</h2>
+            <div class="game-stats">
+                <div class="stat">
+                    <span class="stat-label">Score:</span>
+                    <span id="score">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Lives:</span>
+                    <span id="lives">3</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Level:</span>
+                    <span id="level">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Data Collected:</span>
+                    <span id="data-collected">0</span>/<span id="total-data">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="game-board-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+            <div class="game-overlay" id="gameOverlay">
+                <div class="overlay-content">
+                    <h2 id="overlayTitle">Ready to Collect Data?</h2>
+                    <p id="overlayMessage">Help Snowflake collect all the data pellets while avoiding the competitor ghosts!</p>
+                    <button id="startBtn" class="game-btn">Start Game</button>
+                    <button id="restartBtn" class="game-btn" style="display: none;">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <div class="control-instructions">
+                <h3>🎮 Controls</h3>
+                <p><strong>Arrow Keys</strong> or <strong>WASD</strong> to move Snowflake</p>
+                <p><strong>Space</strong> to pause/resume</p>
+            </div>
+            <div class="competitor-info">
+                <h3>👻 Competitors to Avoid</h3>
+                <div class="competitor-list">
+                    <div class="competitor-item">
+                        <span class="competitor-icon">DB</span>
+                        <span>Databricks</span>
+                    </div>
+                    <div class="competitor-item">
+                        <span class="competitor-icon">F</span>
+                        <span>Microsoft Fabric</span>
+                    </div>
+                    <div class="competitor-item">
+                        <span class="competitor-icon">R</span>
+                        <span>AWS Redshift</span>
+                    </div>
+                    <div class="competitor-item">
+                        <span class="competitor-icon">BQ</span>
+                        <span>Google BigQuery</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="power-ups">
+            <h3>⚡ Power-ups</h3>
+            <div class="power-up-list">
+                <div class="power-up-item">
+                    <span class="power-up-icon">🚀</span>
+                    <span>Speed Boost - Move faster for 10 seconds</span>
+                </div>
+                <div class="power-up-item">
+                    <span class="power-up-icon">🛡️</span>
+                    <span>Shield - Temporary invincibility</span>
+                </div>
+                <div class="power-up-item">
+                    <span class="power-up-icon">💎</span>
+                    <span>Data Multiplier - Double points for 15 seconds</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="snowpac-script.js"></script>
+</body>
+</html>
