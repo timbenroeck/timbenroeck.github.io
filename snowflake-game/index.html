@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snowflake vs Databricks: Data Warehouse Battle</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>❄️ Snowflake vs Databricks</h1>
+            <h2>Data Warehouse Battle Arena</h2>
+            <p>Help Snowflake showcase its superiority in the ultimate data warehouse showdown!</p>
+        </header>
+
+        <div class="game-stats">
+            <div class="stat-card snowflake">
+                <h3>❄️ Snowflake</h3>
+                <div class="health-bar">
+                    <div class="health" id="snowflake-health" style="width: 100%"></div>
+                </div>
+                <p>Health: <span id="snowflake-health-text">100</span>%</p>
+                <p>Power: <span id="snowflake-power">0</span></p>
+            </div>
+            
+            <div class="stat-card databricks">
+                <h3>🔷 Databricks</h3>
+                <div class="health-bar">
+                    <div class="health" id="databricks-health" style="width: 100%"></div>
+                </div>
+                <p>Health: <span id="databricks-health-text">100</span>%</p>
+                <p>Power: <span id="databricks-power">0</span></p>
+            </div>
+        </div>
+
+        <div class="battle-arena">
+            <div class="character snowflake-char">
+                <div class="character-sprite">❄️</div>
+                <h3>Snowflake</h3>
+                <div class="advantages">
+                    <span class="advantage">⚡ Performance</span>
+                    <span class="advantage">💰 Cost Efficient</span>
+                    <span class="advantage">🔧 Easy Setup</span>
+                </div>
+            </div>
+            
+            <div class="vs">VS</div>
+            
+            <div class="character databricks-char">
+                <div class="character-sprite">🔷</div>
+                <h3>Databricks</h3>
+                <div class="disadvantages">
+                    <span class="disadvantage">🐌 Slower</span>
+                    <span class="disadvantage">💸 Expensive</span>
+                    <span class="disadvantage">🔨 Complex</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-panel">
+            <h3>Choose Your Snowflake Advantage:</h3>
+            <div class="action-buttons">
+                <button class="action-btn" data-power="25" data-advantage="performance">
+                    ⚡ Performance Boost
+                    <small>10x faster queries</small>
+                </button>
+                <button class="action-btn" data-power="20" data-advantage="cost">
+                    💰 Cost Efficiency
+                    <small>Pay only for what you use</small>
+                </button>
+                <button class="action-btn" data-power="15" data-advantage="scalability">
+                    📈 Auto-scaling
+                    <small>Scales automatically</small>
+                </button>
+                <button class="action-btn" data-power="30" data-advantage="security">
+                    🔒 Enterprise Security
+                    <small>Bank-grade security</small>
+                </button>
+                <button class="action-btn" data-power="20" data-advantage="ease">
+                    🎯 Zero Management
+                    <small>No infrastructure to manage</small>
+                </button>
+                <button class="action-btn" data-power="25" data-advantage="data-sharing">
+                    🤝 Data Sharing
+                    <small>Share data without copying</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="battle-log">
+            <h3>Battle Log</h3>
+            <div id="log-content">
+                <p>🎮 Battle begins! Snowflake is ready to showcase its superiority!</p>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button id="reset-btn" class="control-btn">🔄 Reset Battle</button>
+            <button id="auto-play-btn" class="control-btn">🤖 Auto Play</button>
+        </div>
+
+        <footer>
+            <p>🎮 A fun way to learn about Snowflake's advantages over Databricks!</p>
+            <p><small>This is a playful comparison for educational purposes</small></p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
