@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player - Movies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .category-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .movie-item {
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            min-height: 120px;
+        }
+        .movie-item:hover {
+            border-left-color: #4834d4;
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .search-input-group {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .search-input-group .form-control {
+            border: none;
+            box-shadow: none;
+        }
+        .search-input-group .input-group-text {
+            background: white;
+            border: none;
+            color: #6c757d;
+        }
+        .search-input-group .btn-primary {
+            background: linear-gradient(45deg, #4834d4, #686de0);
+            border: none;
+            transition: all 0.2s;
+        }
+        .search-input-group .btn-primary:hover {
+            background: linear-gradient(45deg, #3729b8, #5a61d1);
+            transform: translateY(-1px);
+        }
+        .search-input-group .btn-primary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(72, 52, 212, 0.25);
+        }
+        .all-categories-card {
+            border: 2px solid #4834d4;
+            background: rgba(72, 52, 212, 0.05);
+        }
+        .all-categories-card:hover {
+            border-color: #3729b8;
+            background: rgba(72, 52, 212, 0.1);
+            transform: translateY(-2px);
+        }
+        .all-categories-card .card-title {
+            color: #4834d4;
+        }
+        .movie-poster-thumb {
+            transition: transform 0.2s;
+        }
+        .movie-item:hover .movie-poster-thumb {
+            transform: scale(1.05);
+        }
+        .sort-control {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e3e6f0;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sort-control:focus {
+            border-color: #4834d4;
+            box-shadow: 0 0 0 0.2rem rgba(72, 52, 212, 0.25);
+        }
+        .loading {
+            display: none;
+        }
+        .breadcrumb-nav {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #4834d4 0%, #686de0 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #e50914, #b2070f);
+            border: none;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #b2070f, #8a0509);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+            transform: translateY(-2px);
+        }
+        @media (max-width: 991.98px) {
+            .search-input-group {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-0">
+                        <i class="fas fa-film me-2"></i>Movies
+                    </h1>
+                    <p class="mb-0 opacity-75">Browse and watch movies on demand</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-light me-2" onclick="goHome()">
+                        <i class="fas fa-home me-1"></i>Home
+                    </button>
+                    <button class="btn btn-outline-light" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Loading indicator -->
+        <div id="loading" class="loading text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2" id="loading-text">Loading...</p>
+        </div>
+        
+
+        <!-- Categories view -->
+        <div id="categories-view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 id="categories-title">Movie Categories</h3>
+            </div>
+            <div id="categories-list" class="row"></div>
+        </div>
+
+        <!-- Breadcrumb navigation -->
+        <div id="breadcrumb" class="breadcrumb-nav" style="display: none;">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="#" onclick="showCategories()">Categories</a></li>
+                    <li id="breadcrumb-category" class="breadcrumb-item active"></li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Movies view -->
+        <div id="movies-view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 id="movies-title">Movies</h3>
+                <button class="btn btn-secondary" onclick="showCategories()">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Categories
+                </button>
+            </div>
+            
+            <!-- Search and Sort Bar -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-3 mb-lg-0">
+                    <div class="input-group search-input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="movie-search" class="form-control" placeholder="Search movies..." onkeyup="handleSearchKeypress(event)" oninput="handleSearchKeypress(event)">
+                        <button class="btn btn-primary" onclick="performSearch()" id="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearSearch()" id="clear-search-btn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted mt-1 d-block" id="search-results-count"></small>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center">
+                        <label class="me-2 fw-bold text-muted flex-shrink-0">Sort:</label>
+                        <select id="sort-selector" class="form-select sort-control" onchange="handleSortChange()">
+                            <option value="title-asc">Title (A-Z)</option>
+                            <option value="title-desc">Title (Z-A)</option>
+                            <option value="rating-desc">Rating (High to Low)</option>
+                            <option value="rating-asc">Rating (Low to High)</option>
+                            <option value="year-desc">Release Date (Newest)</option>
+                            <option value="year-asc">Release Date (Oldest)</option>
+                            <option value="added-desc">Recently Added</option>
+                            <option value="added-asc">Oldest Added</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Movies per page selector -->
+            <div class="row mb-3">
+                <div class="col-auto">
+                    <label class="form-label small text-muted mb-0">Items per page:</label>
+                    <select id="items-per-page" class="form-select form-select-sm" onchange="changeItemsPerPage()" style="width: auto;">
+                        <option value="25">25</option>
+                        <option value="50" selected>50</option>
+                        <option value="100">100</option>
+                        <option value="200">200</option>
+                    </select>
+                </div>
+                <div class="col text-end">
+                    <small class="text-muted" id="pagination-info"></small>
+                </div>
+            </div>
+            
+            <div id="movies-list"></div>
+            
+            <!-- Pagination controls -->
+            <div id="pagination-controls" class="mt-4"></div>
+        </div>
+
+        <!-- Movie details view -->
+        <div id="movie-details" style="display: none;">
+            <!-- Hero Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <button class="btn btn-outline-secondary mb-3" onclick="goBackToMovies()">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Movies
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Poster Column -->
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="position-relative">
+                        <img id="movie-poster" src="" alt="Poster" class="w-100 rounded shadow-lg" style="aspect-ratio: 2/3; object-fit: cover;">
+                        <div class="position-absolute top-0 start-0 p-2">
+                            <span id="movie-rating-badge" class="badge bg-warning text-dark fs-6">
+                                <i class="fas fa-star me-1"></i><span id="movie-rating">0.0</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Column -->
+                <div class="col-md-8 col-lg-9">
+                    <div class="mb-3">
+                        <h1 id="movie-detail-title" class="display-5 fw-bold mb-2">Movie Details</h1>
+                        <div class="mb-3">
+                            <span id="movie-year" class="badge bg-secondary me-2">2024</span>
+                            <span id="movie-runtime" class="text-muted me-3">
+                                <i class="fas fa-clock me-1"></i>120 min
+                            </span>
+                            <span id="movie-genre" class="text-muted">Genre</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="mb-4">
+                        <button class="btn btn-primary btn-lg me-2" onclick="playMovie()" id="play-btn">
+                            <i class="fas fa-play me-2"></i>Play
+                        </button>
+                        <button class="btn btn-outline-light me-2" onclick="toggleTrailer()" id="trailer-btn" style="display: none;">
+                            <i class="fab fa-youtube me-2"></i>Trailer
+                        </button>
+                        <button class="btn btn-outline-secondary me-2" onclick="copyMovieUrl()">
+                            <i class="fas fa-copy me-1"></i>Copy URL
+                        </button>
+                        <button class="btn btn-outline-success" onclick="downloadMovie()">
+                            <i class="fas fa-download me-1"></i>Download
+                        </button>
+                    </div>
+
+                    <!-- Plot -->
+                    <div class="mb-4">
+                        <h5>Synopsis</h5>
+                        <p id="movie-plot" class="lead">Loading plot...</p>
+                    </div>
+
+                    <!-- Cast & Crew -->
+                    <div class="row mb-4" style="background: #f8f9fa; border-radius: 0.5rem; padding: 1.5rem;">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-users me-2 text-primary"></i>Cast
+                            </h6>
+                            <p id="movie-cast" class="mb-0">Loading cast...</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-video me-2 text-success"></i>Director
+                            </h6>
+                            <p id="movie-director" class="mb-0">Loading director...</p>
+                        </div>
+                    </div>
+
+                    <!-- Release Info -->
+                    <div class="mb-4">
+                        <small class="text-muted">
+                            <span class="me-3">
+                                <i class="fas fa-calendar me-1"></i>
+                                Release Date: <span id="movie-release">Unknown</span>
+                            </span>
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Player (Hidden by default) -->
+            <div id="video-container" class="mb-4" style="display: none;">
+                <div class="ratio ratio-16x9">
+                    <video id="video-player" controls autoplay style="background: #000;" preload="none">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- YouTube Trailer (Hidden by default) -->
+            <div id="trailer-container" class="mb-4" style="display: none;">
+                <div class="ratio ratio-16x9">
+                    <iframe id="youtube-trailer" src="" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <!-- Technical Details (Collapsible) -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <button class="btn btn-link text-decoration-none p-0 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#technical-details" aria-expanded="false">
+                        <i class="fas fa-cog me-2"></i>Technical Details
+                        <i class="fas fa-chevron-down float-end mt-1"></i>
+                    </button>
+                </div>
+                <div class="collapse" id="technical-details">
+                    <div class="card-body">
+                        <!-- Movie URL -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold">Stream URL</h6>
+                            <div class="input-group">
+                                <input type="text" id="movie-url" class="form-control font-monospace" readonly>
+                                <button class="btn btn-outline-secondary" onclick="copyMovieUrlTechnical()">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Movie Information -->
+                        <div>
+                            <h6 class="fw-bold">Stream Information (JSON)</h6>
+                            <pre id="movie-info" class="font-monospace small" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; max-height: 300px; overflow-y: auto;"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/movies.js"></script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .content-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            height: 200px;
+        }
+        .content-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .live-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        .movies-card {
+            background: linear-gradient(135deg, #4834d4, #686de0);
+        }
+        .series-card {
+            background: linear-gradient(135deg, #00d2d3, #01a3a4);
+        }
+        .content-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .content-title {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .content-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        .app-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .app-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            margin: 1rem auto 3rem auto;
+            text-align: center;
+            color: #333;
+            font-size: 1.1rem;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            max-width: 600px;
+        }
+        .content-buttons {
+            margin-bottom: 4rem;
+        }
+        .info-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .info-box-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .info-box-header:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+        }
+        .info-box-header i.fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        .info-box-header.expanded i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        .info-box-content {
+            padding: 2rem;
+            display: none;
+        }
+        .info-box-title {
+            display: flex;
+            align-items: center;
+        }
+        .info-box-title i {
+            margin-right: 0.5rem;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .info-item {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .info-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .info-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #333;
+        }
+        .settings-controls {
+            text-align: center;
+        }
+        .btn-clear-cache {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-clear-cache:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <button class="btn logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt me-1"></i>Logout
+    </button>
+
+    <div class="container main-container">
+        <div class="row justify-content-center w-100">
+            <div class="col-lg-10 col-xl-8">
+                <div class="main-card p-5">
+                    <div class="text-center mb-4">
+                        <h1 class="app-title">IPTV Player</h1>
+                    </div>
+
+                    <!-- Welcome Message -->
+                    <div id="welcome-text" class="welcome-message" style="display: none;">
+                        Loading account information...
+                    </div>
+
+                    <div class="row g-4 content-buttons">
+                        <div class="col-md-4">
+                            <div class="content-card live-card d-flex flex-column align-items-center justify-content-center text-center p-4" onclick="navigateToLive()">
+                                <i class="fas fa-broadcast-tower content-icon"></i>
+                                <h3 class="content-title">Live TV</h3>
+                                <p class="content-description">Watch live television channels and broadcasts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="content-card movies-card d-flex flex-column align-items-center justify-content-center text-center p-4" onclick="navigateToMovies()">
+                                <i class="fas fa-film content-icon"></i>
+                                <h3 class="content-title">Movies</h3>
+                                <p class="content-description">Browse and watch movies on demand</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="content-card series-card d-flex flex-column align-items-center justify-content-center text-center p-4" onclick="navigateToSeries()">
+                                <i class="fas fa-tv content-icon"></i>
+                                <h3 class="content-title">Series</h3>
+                                <p class="content-description">Explore TV shows and series episodes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Details -->
+                    <div id="account-details-section" class="info-box" style="display: none;">
+                        <div class="info-box-header" onclick="toggleInfoBox('account-details-content')">
+                            <div class="info-box-title">
+                                <i class="fas fa-user-circle"></i>
+                                Account Details
+                            </div>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div id="account-details-content" class="info-box-content">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-label">Status</div>
+                                    <div class="info-value" id="account-status">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Max Connections</div>
+                                    <div class="info-value" id="max-connections">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Active Connections</div>
+                                    <div class="info-value" id="active-connections">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Trial Account</div>
+                                    <div class="info-value" id="is-trial">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Created Date</div>
+                                    <div class="info-value" id="created-date">-</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Server Version</div>
+                                    <div class="info-value" id="server-version">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="info-box">
+                        <div class="info-box-header" onclick="toggleInfoBox('settings-content')">
+                            <div class="info-box-title">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </div>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div id="settings-content" class="info-box-content">
+                            <div class="settings-controls">
+                                <button class="btn btn-clear-cache" onclick="clearAllCacheWithConfirm()">
+                                    <i class="fas fa-trash-alt me-2"></i>Clear Cache
+                                </button>
+                                <p class="text-muted mt-2 mb-0">
+                                    <small>Clear all cached data to force fresh API calls</small>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Your credentials are securely encoded in the URL. Bookmark this page for easy access.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        // Check authentication on page load
+        window.onload = function() {
+            if (!initializePage()) {
+                return; // Will redirect to login if auth fails
+            }
+            loadAccountInfo();
+        };
+
+        function navigateToLive() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authParam = urlParams.get('auth');
+            window.location.href = `live.html?auth=${authParam}`;
+        }
+
+        function navigateToMovies() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authParam = urlParams.get('auth');
+            window.location.href = `movies.html?auth=${authParam}`;
+        }
+
+        function navigateToSeries() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authParam = urlParams.get('auth');
+            window.location.href = `series.html?auth=${authParam}`;
+        }
+
+        function loadAccountInfo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const authParam = urlParams.get('auth');
+            
+            if (!authParam) {
+                console.error('No auth parameter found');
+                return;
+            }
+
+            try {
+                const authData = JSON.parse(atob(authParam));
+                const { username, password, base_url } = authData;
+                
+                // Make API call to player_info.php (no action parameter)
+                const apiUrl = `${base_url}/player_api.php?username=${username}&password=${password}`;
+                
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.user_info) {
+                            displayAccountInfo(data);
+                        } else {
+                            console.error('Invalid account info response:', data);
+                            showAccountError();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching account info:', error);
+                        showAccountError();
+                    });
+                    
+            } catch (error) {
+                console.error('Error parsing auth data:', error);
+                showAccountError();
+            }
+        }
+
+        function displayAccountInfo(data) {
+            const userInfo = data.user_info;
+            const serverInfo = data.server_info;
+            
+            // Format expiration date from Unix timestamp to MM/DD/YYYY
+            const expDate = formatUnixTimestamp(userInfo.exp_date);
+            
+            // Update welcome message
+            const welcomeText = document.getElementById('welcome-text');
+            welcomeText.innerHTML = `Welcome <strong>${userInfo.username}</strong>, your subscription expires on <strong>${expDate}</strong>`;
+            welcomeText.style.display = 'block';
+            
+            // Update account details
+            document.getElementById('account-status').textContent = userInfo.status;
+            document.getElementById('max-connections').textContent = userInfo.max_connections;
+            document.getElementById('active-connections').textContent = userInfo.active_cons;
+            document.getElementById('is-trial').textContent = userInfo.is_trial === "1" ? "Yes" : "No";
+            document.getElementById('created-date').textContent = formatUnixTimestamp(userInfo.created_at);
+            document.getElementById('server-version').textContent = serverInfo.version || 'Unknown';
+            
+            // Show the account details section
+            document.getElementById('account-details-section').style.display = 'block';
+        }
+
+        function formatUnixTimestamp(timestamp) {
+            if (!timestamp || timestamp === "0") {
+                return "Unknown";
+            }
+            
+            const date = new Date(parseInt(timestamp) * 1000);
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const year = date.getFullYear();
+            
+            return `${month}/${day}/${year}`;
+        }
+
+        function showAccountError() {
+            const welcomeText = document.getElementById('welcome-text');
+            welcomeText.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Unable to load account information';
+            welcomeText.style.display = 'block';
+        }
+
+        function toggleInfoBox(contentId) {
+            const content = document.getElementById(contentId);
+            const header = content.previousElementSibling;
+            const chevron = header.querySelector('.fa-chevron-down');
+            
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                header.classList.add('expanded');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                header.classList.remove('expanded');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function clearAllCacheWithConfirm() {
+            if (confirm('Are you sure you want to clear all cached data?\n\nThis will force fresh API calls but may slow down the next few page loads.')) {
+                try {
+                    clearAllCache();
+                    showCacheStatus('All cached data has been cleared successfully!', 'success');
+                } catch (error) {
+                    console.error('Error clearing cache:', error);
+                    showCacheStatus('Error clearing cache. Please try again.', 'error');
+                }
+            }
+        }
+    </script>
+</body>
+</html>

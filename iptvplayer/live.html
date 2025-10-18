@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player - Live TV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .category-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .channel-item {
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+            min-height: 80px;
+        }
+        .channel-item:hover {
+            border-left-color: #ff6b6b;
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .search-input-group {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .search-input-group .form-control {
+            border: none;
+            box-shadow: none;
+        }
+        .search-input-group .input-group-text {
+            background: white;
+            border: none;
+            color: #6c757d;
+        }
+        .search-input-group .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            transition: all 0.2s;
+        }
+        .search-input-group .btn-primary:hover {
+            background: linear-gradient(45deg, #ee5a24, #dd4b23);
+            transform: translateY(-1px);
+        }
+        .search-input-group .btn-primary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        }
+        .all-categories-card {
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        .all-categories-card:hover {
+            border-color: #ee5a24;
+            background: rgba(255, 107, 107, 0.1);
+            transform: translateY(-2px);
+        }
+        .all-categories-card .card-title {
+            color: #ff6b6b;
+        }
+        .sort-control {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e3e6f0;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sort-control:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        }
+        .loading {
+            display: none;
+        }
+        .breadcrumb-nav {
+            background: #e9ecef;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .page-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        .live-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #dc3545;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .epg-item {
+            transition: all 0.2s ease;
+        }
+        .epg-item:hover {
+            background-color: #f8f9fa !important;
+            transform: translateY(-1px);
+        }
+        .epg-item:last-child {
+            border-bottom: none !important;
+        }
+        @media (max-width: 991.98px) {
+            .search-input-group {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="page-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="mb-0">
+                        <i class="fas fa-broadcast-tower me-2"></i>Live TV
+                    </h1>
+                    <p class="mb-0 opacity-75">Watch live television channels</p>
+                </div>
+                <div>
+                    <button class="btn btn-outline-light me-2" onclick="goHome()">
+                        <i class="fas fa-home me-1"></i>Home
+                    </button>
+                    <button class="btn btn-outline-light" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-1"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Loading indicator -->
+        <div id="loading" class="loading text-center">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading...</p>
+        </div>
+
+        <!-- Categories view -->
+        <div id="categories-view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 id="categories-title">Live TV Categories</h3>
+            </div>
+            <div id="categories-list" class="row"></div>
+        </div>
+
+        <!-- Breadcrumb navigation -->
+        <div id="breadcrumb" class="breadcrumb-nav" style="display: none;">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="#" onclick="showCategories()">Categories</a></li>
+                    <li id="breadcrumb-category" class="breadcrumb-item active"></li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Channels view -->
+        <div id="channels-view" style="display: none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 id="channels-title">Live Channels</h3>
+                <button class="btn btn-secondary" onclick="showCategories()">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Categories
+                </button>
+            </div>
+            
+            <!-- Search and Sort Bar -->
+            <div class="row mb-4">
+                <div class="col-lg-6 mb-3 mb-lg-0">
+                    <div class="input-group search-input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="channel-search" class="form-control" placeholder="Search channels..." onkeypress="handleSearchKeypress(event)">
+                        <button class="btn btn-primary" onclick="performSearch()" id="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="clearSearch()" id="clear-search-btn" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <small class="text-muted mt-1 d-block" id="search-results-count"></small>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex align-items-center">
+                        <label class="me-2 fw-bold text-muted flex-shrink-0">Sort:</label>
+                        <select id="sort-selector" class="form-select sort-control" onchange="handleSortChange()">
+                            <option value="title-asc">Name (A-Z)</option>
+                            <option value="title-desc">Name (Z-A)</option>
+                            <option value="added-desc">Recently Added</option>
+                            <option value="added-asc">Oldest Added</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="channels-list"></div>
+        </div>
+
+        <!-- Channel details view -->
+        <div id="channel-details" style="display: none;">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <button class="btn btn-outline-secondary mb-3" onclick="goBackToChannels()">
+                        <i class="fas fa-arrow-left me-1"></i>Back to Channels
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="position-relative">
+                        <img id="channel-logo" src="" alt="Channel Logo" class="w-100 rounded shadow-lg" style="aspect-ratio: 1; object-fit: cover; max-height: 200px;">
+                        <div class="position-absolute top-0 start-0 p-2">
+                            <span class="badge bg-danger">
+                                <span class="live-indicator me-1"></span>LIVE
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8 col-lg-9">
+                    <div class="mb-3">
+                        <h1 id="channel-title" class="display-5 fw-bold mb-2">Channel Details</h1>
+                        <p id="channel-category" class="text-muted">Category</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <button class="btn btn-danger btn-lg me-2" onclick="playChannel()" id="play-btn">
+                            <i class="fas fa-play me-2"></i>Watch Live
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="copyChannelUrl()">
+                            <i class="fas fa-copy me-1"></i>Copy URL
+                        </button>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Program Guide</h5>
+                        <div id="channel-epg" class="border rounded p-3 bg-light">
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 mb-0 text-muted">Loading program information...</p>
+                            </div>
+                        </div>
+                        <button id="view-more-epg" class="btn btn-outline-primary mt-2" style="display: none;" onclick="loadFullEPG()">
+                            <i class="fas fa-list me-1"></i>View More Programs
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Player -->
+            <div id="video-container" class="mb-4" style="display: none;">
+                <div class="ratio ratio-16x9">
+                    <video id="video-player" controls style="background: #000;">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+
+            <!-- Technical Details -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <button class="btn btn-link text-decoration-none p-0 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#technical-details" aria-expanded="false">
+                        <i class="fas fa-cog me-2"></i>Technical Details
+                        <i class="fas fa-chevron-down float-end mt-1"></i>
+                    </button>
+                </div>
+                <div class="collapse" id="technical-details">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <h6 class="fw-bold">Channel Stream URL</h6>
+                            <div class="input-group">
+                                <input type="text" id="channel-url" class="form-control font-monospace" readonly>
+                                <button class="btn btn-outline-secondary" onclick="copyChannelUrlTechnical()">
+                                    <i class="fas fa-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h6 class="fw-bold">Channel Information (JSON)</h6>
+                            <pre id="channel-info" class="font-monospace small" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; max-height: 300px; overflow-y: auto;"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        // Global variables
+        let currentCategory = null;
+        let currentChannel = null;
+        let allChannels = [];
+        let filteredChannels = [];
+        let currentSort = 'title-asc';
+
+        // Initialize page
+        window.onload = function() {
+            if (!initializePage()) {
+                return; // Will redirect to login if auth fails
+            }
+            loadCategories();
+        };
+
+        // Load live TV categories
+        async function loadCategories() {
+            showLoading();
+            hideAllViews();
+
+            try {
+                const categories = await fetchAPI('get_live_categories');
+                displayCategories(categories);
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                alert('Error loading categories. Please check your connection and try again.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display categories
+        function displayCategories(categories) {
+            const categoriesView = document.getElementById('categories-view');
+            const categoriesList = document.getElementById('categories-list');
+            
+            categoriesList.innerHTML = '';
+
+            // Add "All Categories" option first
+            const allCol = document.createElement('div');
+            allCol.className = 'col-md-6 col-lg-4 mb-3';
+            
+            allCol.innerHTML = `
+                <div class="card category-card all-categories-card h-100" onclick="selectAllCategories()">
+                    <div class="card-body">
+                        <h6 class="card-title fw-bold">All Categories</h6>
+                    </div>
+                </div>
+            `;
+            
+            categoriesList.appendChild(allCol);
+
+            // Sort categories alphabetically by name
+            const sortedCategories = [...categories].sort((a, b) => {
+                return (a.category_name || '').localeCompare(b.category_name || '');
+            });
+
+            // Add regular categories
+            sortedCategories.forEach(category => {
+                const col = document.createElement('div');
+                col.className = 'col-md-6 col-lg-4 mb-3';
+                
+                col.innerHTML = `
+                    <div class="card category-card h-100" onclick="selectCategory(${category.category_id}, '${category.category_name.replace(/'/g, "\\'")}')">
+                        <div class="card-body">
+                            <h6 class="card-title">${category.category_name}</h6>
+                        </div>
+                    </div>
+                `;
+                
+                categoriesList.appendChild(col);
+            });
+
+            categoriesView.style.display = 'block';
+        }
+
+        // Select category
+        function selectCategory(categoryId, categoryName) {
+            currentCategory = { id: categoryId, name: categoryName };
+            loadChannels(categoryId, categoryName);
+        }
+
+        // Select all categories
+        function selectAllCategories() {
+            currentCategory = { id: null, name: 'All Categories' };
+            loadAllChannels();
+        }
+
+        // Load channels for category
+        async function loadChannels(categoryId, categoryName) {
+            showLoading();
+            hideAllViews();
+
+            try {
+                const channels = await fetchAPI('get_live_streams', { category_id: categoryId });
+                displayChannels(channels, `Live TV - ${categoryName}`);
+            } catch (error) {
+                console.error('Error loading channels:', error);
+                alert('Error loading channels. Please check your connection and try again.');
+                showCategories();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Load all channels
+        async function loadAllChannels() {
+            showLoading();
+            hideAllViews();
+
+            try {
+                const channels = await fetchAPI('get_live_streams');
+                displayChannels(channels, 'All Live TV');
+            } catch (error) {
+                console.error('Error loading all channels:', error);
+                alert('Error loading channels. Please check your connection and try again.');
+                showCategories();
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Display channels
+        function displayChannels(channels, title) {
+            const channelsView = document.getElementById('channels-view');
+            const channelsTitle = document.getElementById('channels-title');
+            const searchInput = document.getElementById('channel-search');
+            const resultsCount = document.getElementById('search-results-count');
+            const sortSelector = document.getElementById('sort-selector');
+            
+            allChannels = channels;
+            const sortedChannels = sortItems([...channels], currentSort);
+            filteredChannels = sortedChannels;
+            
+            channelsTitle.textContent = title;
+            
+            searchInput.value = '';
+            document.getElementById('clear-search-btn').style.display = 'none';
+            sortSelector.value = currentSort;
+
+            document.getElementById('breadcrumb').style.display = 'block';
+            document.getElementById('breadcrumb-category').textContent = currentCategory.name;
+
+            resultsCount.textContent = `Showing ${sortedChannels.length} ${sortedChannels.length === 1 ? 'channel' : 'channels'}`;
+
+            renderChannels(sortedChannels);
+            channelsView.style.display = 'block';
+        }
+
+        // Render channels
+        function renderChannels(channels) {
+            const channelsList = document.getElementById('channels-list');
+            channelsList.innerHTML = '';
+
+            if (channels.length === 0) {
+                channelsList.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No channels found</h5>
+                        <p class="text-muted">Try adjusting your search terms</p>
+                    </div>
+                `;
+                return;
+            }
+
+            channels.forEach(channel => {
+                const channelDiv = document.createElement('div');
+                channelDiv.className = 'channel-item p-3 mb-2 border rounded';
+                channelDiv.onclick = () => selectChannel(channel);
+                
+                channelDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            ${channel.stream_icon ? 
+                                `<img src="${channel.stream_icon}" alt="Logo" style="width: 48px; height: 48px; object-fit: cover;" class="rounded">` : 
+                                `<div style="width: 48px; height: 48px;" class="bg-light rounded d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-tv text-muted"></i>
+                                </div>`
+                            }
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center">
+                                <h6 class="mb-0 me-2">${channel.name}</h6>
+                                <span class="live-indicator me-1"></span>
+                                <small class="text-danger fw-bold">LIVE</small>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                `;
+                
+                channelsList.appendChild(channelDiv);
+            });
+        }
+
+        // Select channel
+        function selectChannel(channel) {
+            currentChannel = channel;
+            showChannelDetails(channel);
+        }
+
+        // Show channel details
+        async function showChannelDetails(channel) {
+            hideAllViews();
+            
+            document.getElementById('channel-title').textContent = channel.name || 'Unknown Channel';
+            document.getElementById('channel-category').textContent = 'Live Television';
+            
+            const channelLogo = document.getElementById('channel-logo');
+            if (channel.stream_icon) {
+                channelLogo.src = channel.stream_icon;
+            } else {
+                channelLogo.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5vIExvZ288L3RleHQ+PC9zdmc+';
+            }
+            
+            const playUrl = generateStreamUrl(channel, 'live');
+            document.getElementById('channel-url').value = playUrl;
+            window.currentChannelUrl = playUrl;
+            
+            // Load EPG data for this channel
+            await loadChannelEPG(channel.stream_id);
+            
+            document.getElementById('channel-info').textContent = JSON.stringify(channel, null, 2);
+            
+            document.getElementById('video-container').style.display = 'none';
+            document.getElementById('channel-details').style.display = 'block';
+        }
+
+        // Play channel
+        function playChannel() {
+            if (window.currentChannelUrl) {
+                const videoContainer = document.getElementById('video-container');
+                const videoPlayer = document.getElementById('video-player');
+                const playBtn = document.getElementById('play-btn');
+                
+                videoContainer.style.display = 'block';
+                videoPlayer.src = window.currentChannelUrl;
+                
+                playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
+                playBtn.onclick = stopChannel;
+                
+                videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Stop channel
+        function stopChannel() {
+            const videoContainer = document.getElementById('video-container');
+            const videoPlayer = document.getElementById('video-player');
+            const playBtn = document.getElementById('play-btn');
+            
+            videoContainer.style.display = 'none';
+            videoPlayer.pause();
+            videoPlayer.src = '';
+            
+            playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Watch Live';
+            playBtn.onclick = playChannel;
+        }
+
+        // Copy functions
+        function copyChannelUrl() {
+            if (window.currentChannelUrl) {
+                copyToClipboard(window.currentChannelUrl).then(() => {
+                    const button = event.target.closest('button');
+                    showButtonFeedback(button);
+                });
+            }
+        }
+
+        function copyChannelUrlTechnical() {
+            const channelUrl = document.getElementById('channel-url');
+            channelUrl.select();
+            document.execCommand('copy');
+            const button = event.target.closest('button');
+            showButtonFeedback(button);
+        }
+
+        // Search functions
+        function handleSearchKeypress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                performSearch();
+            }
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('channel-search');
+            const clearBtn = document.getElementById('clear-search-btn');
+            const resultsCount = document.getElementById('search-results-count');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            clearBtn.style.display = searchTerm ? 'block' : 'none';
+            const filtered = searchItems(allChannels, searchTerm);
+            filteredChannels = sortItems(filtered, currentSort);
+            
+            resultsCount.textContent = `Showing ${filteredChannels.length} of ${allChannels.length} ${allChannels.length === 1 ? 'channel' : 'channels'}`;
+            renderChannels(filteredChannels);
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('channel-search');
+            const clearBtn = document.getElementById('clear-search-btn');
+            
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            performSearch();
+            searchInput.focus();
+        }
+
+        function handleSortChange() {
+            const sortSelector = document.getElementById('sort-selector');
+            currentSort = sortSelector.value;
+            filteredChannels = sortItems([...filteredChannels], currentSort);
+            renderChannels(filteredChannels);
+        }
+
+        // Navigation
+        function showCategories() {
+            hideAllViews();
+            loadCategories();
+        }
+
+        function goBackToChannels() {
+            if (currentCategory) {
+                if (currentCategory.id === null) {
+                    loadAllChannels();
+                } else {
+                    loadChannels(currentCategory.id, currentCategory.name);
+                }
+            } else {
+                showCategories();
+            }
+        }
+
+        function hideAllViews() {
+            document.getElementById('categories-view').style.display = 'none';
+            document.getElementById('channels-view').style.display = 'none';
+            document.getElementById('channel-details').style.display = 'none';
+            document.getElementById('breadcrumb').style.display = 'none';
+        }
+
+        // EPG functions
+        async function loadChannelEPG(streamId) {
+            const epgContainer = document.getElementById('channel-epg');
+            const viewMoreBtn = document.getElementById('view-more-epg');
+            
+            // Store current stream ID for "view more" functionality
+            window.currentStreamId = streamId;
+            
+            try {
+                // Show loading state
+                epgContainer.innerHTML = `
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 mb-0 text-muted">Loading program information...</p>
+                    </div>
+                `;
+                
+                // Fetch short EPG data
+                const epgData = await fetchAPI('get_short_epg', { stream_id: streamId });
+                
+                if (epgData && epgData.epg_listings && epgData.epg_listings.length > 0) {
+                    displayEPGData(epgData.epg_listings, false);
+                    viewMoreBtn.style.display = 'block';
+                } else {
+                    // No EPG data available
+                    epgContainer.innerHTML = `
+                        <div class="text-center py-3">
+                            <i class="fas fa-tv text-muted fa-2x mb-2"></i>
+                            <p class="text-muted mb-0">No program information available for this channel</p>
+                        </div>
+                    `;
+                    viewMoreBtn.style.display = 'none';
+                }
+                
+            } catch (error) {
+                console.error('Error loading EPG:', error);
+                epgContainer.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-exclamation-triangle text-warning fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">Failed to load program information</p>
+                    </div>
+                `;
+                viewMoreBtn.style.display = 'none';
+            }
+        }
+
+        async function loadFullEPG() {
+            const viewMoreBtn = document.getElementById('view-more-epg');
+            
+            if (!window.currentStreamId) {
+                console.error('No stream ID available for full EPG');
+                return;
+            }
+            
+            try {
+                // Update button to show loading
+                const originalText = viewMoreBtn.innerHTML;
+                viewMoreBtn.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div>Loading...';
+                viewMoreBtn.disabled = true;
+                
+                // Fetch full EPG data
+                const epgData = await fetchAPI('get_simple_data_table', { stream_id: window.currentStreamId });
+                
+                if (epgData && epgData.epg_listings && epgData.epg_listings.length > 0) {
+                    displayEPGData(epgData.epg_listings, true);
+                    viewMoreBtn.style.display = 'none'; // Hide button after loading full data
+                } else {
+                    // Restore button
+                    viewMoreBtn.innerHTML = originalText;
+                    viewMoreBtn.disabled = false;
+                    alert('No additional program data available');
+                }
+                
+            } catch (error) {
+                console.error('Error loading full EPG:', error);
+                // Restore button
+                viewMoreBtn.innerHTML = originalText;
+                viewMoreBtn.disabled = false;
+                alert('Failed to load additional program data');
+            }
+        }
+
+        function displayEPGData(epgListings, isFullData = false) {
+            const epgContainer = document.getElementById('channel-epg');
+            
+            if (!epgListings || epgListings.length === 0) {
+                epgContainer.innerHTML = `
+                    <div class="text-center py-3">
+                        <i class="fas fa-tv text-muted fa-2x mb-2"></i>
+                        <p class="text-muted mb-0">No program information available</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort listings by start time
+            const sortedListings = [...epgListings].sort((a, b) => {
+                return parseInt(a.start_timestamp) - parseInt(b.start_timestamp);
+            });
+            
+            let epgHtml = '';
+            
+            if (isFullData && sortedListings.length > 5) {
+                epgHtml += `<div class="mb-2 text-muted small">Showing ${sortedListings.length} programs</div>`;
+            }
+            
+            sortedListings.forEach((listing, index) => {
+                const title = decodeBase64(listing.title) || 'Unknown Program';
+                const description = decodeBase64(listing.description) || '';
+                const startTime = formatEPGTime(listing.start);
+                const endTime = formatEPGTime(listing.stop);
+                
+                // Determine if this program is currently airing
+                const now = new Date();
+                const startDate = new Date(listing.start);
+                const endDate = new Date(listing.stop);
+                const isCurrentlyAiring = now >= startDate && now <= endDate;
+                const isPast = now > endDate;
+                
+                epgHtml += `
+                    <div class="epg-item border-bottom pb-2 mb-2 ${isCurrentlyAiring ? 'bg-success bg-opacity-10 border-success' : ''} ${isPast ? 'text-muted' : ''}">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h6 class="mb-0 ${isCurrentlyAiring ? 'text-success fw-bold' : ''}">${title}</h6>
+                            <span class="badge ${isCurrentlyAiring ? 'bg-success' : isPast ? 'bg-secondary' : 'bg-primary'} ms-2">
+                                ${isCurrentlyAiring ? 'LIVE NOW' : isPast ? 'ENDED' : 'UPCOMING'}
+                            </span>
+                        </div>
+                        <div class="small text-muted mb-1">
+                            <i class="fas fa-clock me-1"></i>
+                            ${startTime} - ${endTime}
+                        </div>
+                        ${description ? `<p class="small mb-0 ${isPast ? 'text-muted' : ''}">${description}</p>` : ''}
+                    </div>
+                `;
+            });
+            
+            epgContainer.innerHTML = epgHtml;
+        }
+
+        function decodeBase64(str) {
+            if (!str) return '';
+            try {
+                return atob(str);
+            } catch (error) {
+                console.warn('Failed to decode base64 string:', str);
+                return str; // Return original string if decoding fails
+            }
+        }
+
+        function formatEPGTime(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch (error) {
+                return 'Unknown Time';
+            }
+        }
+    </script>
+</body>
+</html>

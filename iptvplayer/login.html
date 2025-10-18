@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        .form-floating > .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+        }
+        .form-floating > .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+        }
+        .logo-icon {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .example-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card login-card">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <i class="fas fa-play-circle fa-4x logo-icon mb-3"></i>
+                            <h2 class="fw-bold">IPTV Player</h2>
+                            <p class="text-muted">Enter your Xtream API credentials</p>
+                        </div>
+
+                        <form id="loginForm" onsubmit="handleLogin(event)">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="baseUrl" placeholder="Server URL" required>
+                                <label for="baseUrl">
+                                    <i class="fas fa-server me-2"></i>Server URL
+                                </label>
+                                <div class="example-text mt-1">
+                                    Example: http://xtreamcode.ex
+                                </div>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="username" placeholder="Username" required>
+                                <label for="username">
+                                    <i class="fas fa-user me-2"></i>Username
+                                </label>
+                                <div class="example-text mt-1">
+                                    Example: Mike
+                                </div>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="password" class="form-control" id="password" placeholder="Password" required>
+                                <label for="password">
+                                    <i class="fas fa-lock me-2"></i>Password
+                                </label>
+                                <div class="example-text mt-1">
+                                    Example: 1234
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-login w-100">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login & Generate Link
+                            </button>
+                        </form>
+
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-info-circle me-2 text-primary"></i>How it works:
+                            </h6>
+                            <ul class="small mb-0">
+                                <li>Enter your Xtream API server details</li>
+                                <li>Your credentials will be encoded into a secure link</li>
+                                <li>Bookmark the generated link for easy access</li>
+                                <li>No credentials are stored on our servers</li>
+                            </ul>
+                        </div>
+
+                        <!-- Generated link display -->
+                        <div id="generatedLink" class="mt-4 p-3 bg-success bg-opacity-10 border border-success rounded" style="display: none;">
+                            <h6 class="fw-bold text-success mb-2">
+                                <i class="fas fa-check-circle me-2"></i>Your secure link:
+                            </h6>
+                            <div class="input-group">
+                                <input type="text" id="bookmarkUrl" class="form-control" readonly>
+                                <button class="btn btn-outline-success" onclick="copyBookmarkUrl()">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">Bookmark this link or</small>
+                                <button class="btn btn-success btn-sm ms-2" onclick="redirectToApp()">
+                                    <i class="fas fa-arrow-right me-1"></i>Go to App
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Error display -->
+                        <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="errorText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if we already have auth parameters in URL (for testing/demo)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const testUrl = urlParams.get('test_url');
+            const testUser = urlParams.get('test_user');
+            const testPass = urlParams.get('test_pass');
+            
+            if (testUrl && testUser && testPass) {
+                document.getElementById('baseUrl').value = testUrl;
+                document.getElementById('username').value = testUser;
+                document.getElementById('password').value = testPass;
+            }
+        };
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const baseUrl = document.getElementById('baseUrl').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            // Validate inputs
+            if (!baseUrl || !username || !password) {
+                showError('All fields are required');
+                return;
+            }
+            
+            // Remove trailing slash from baseUrl if present
+            const cleanBaseUrl = baseUrl.replace(/\/$/, '');
+            
+            // Validate URL format
+            try {
+                new URL(cleanBaseUrl);
+            } catch (e) {
+                showError('Please enter a valid URL (e.g., http://example.com)');
+                return;
+            }
+            
+            // Create auth object
+            const authData = {
+                base_url: cleanBaseUrl,
+                username: username,
+                password: password
+            };
+            
+            try {
+                // Encode to base64
+                const authString = JSON.stringify(authData);
+                const encodedAuth = btoa(authString);
+                
+                // Generate the bookmark URL
+                const currentOrigin = window.location.origin;
+                const currentPath = window.location.pathname.replace('login.html', '');
+                const bookmarkUrl = `${currentOrigin}${currentPath}index.html?auth=${encodedAuth}`;
+                
+                // Show the generated link
+                document.getElementById('bookmarkUrl').value = bookmarkUrl;
+                document.getElementById('generatedLink').style.display = 'block';
+                hideError();
+                
+                // Store for redirect
+                window.generatedUrl = bookmarkUrl;
+                
+            } catch (error) {
+                showError('Error generating authentication link: ' + error.message);
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('errorText').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+        
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        function copyBookmarkUrl() {
+            const urlInput = document.getElementById('bookmarkUrl');
+            urlInput.select();
+            document.execCommand('copy');
+            
+            // Show feedback
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.replace('btn-outline-success', 'btn-success');
+            
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.classList.replace('btn-success', 'btn-outline-success');
+            }, 2000);
+        }
+        
+        function redirectToApp() {
+            if (window.generatedUrl) {
+                window.location.href = window.generatedUrl;
+            }
+        }
+    </script>
+</body>
+</html>
