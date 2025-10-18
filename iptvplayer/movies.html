@@ -287,11 +287,8 @@
                         <button class="btn btn-outline-light me-2" onclick="toggleTrailer()" id="trailer-btn" style="display: none;">
                             <i class="fab fa-youtube me-2"></i>Trailer
                         </button>
-                        <button class="btn btn-outline-secondary me-2" onclick="copyMovieUrl()">
+                        <button class="btn btn-outline-secondary" onclick="copyMovieUrl()">
                             <i class="fas fa-copy me-1"></i>Copy URL
-                        </button>
-                        <button class="btn btn-outline-success" onclick="downloadMovie()">
-                            <i class="fas fa-download me-1"></i>Download
                         </button>
                     </div>
 
@@ -345,35 +342,6 @@
                 </div>
             </div>
 
-            <!-- Stream Details (Collapsible) -->
-            <div class="card">
-                <div class="card-header bg-light">
-                    <button class="btn btn-link text-decoration-none p-0 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#technical-details" aria-expanded="false">
-                        <i class="fas fa-cog me-2"></i>Stream Details 
-                        <i class="fas fa-chevron-down float-end mt-1"></i>
-                    </button>
-                </div>
-                <div class="collapse" id="technical-details">
-                    <div class="card-body">
-                        <!-- Movie URL -->
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Stream URL</h6>
-                            <div class="input-group">
-                                <input type="text" id="movie-url" class="form-control font-monospace" readonly>
-                                <button class="btn btn-outline-secondary" onclick="copyMovieUrlTechnical()">
-                                    <i class="fas fa-copy me-1"></i>Copy
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Movie Information -->
-                        <div>
-                            <h6 class="fw-bold">Stream Information (JSON)</h6>
-                            <pre id="movie-info" class="font-monospace small" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; max-height: 300px; overflow-y: auto;"></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

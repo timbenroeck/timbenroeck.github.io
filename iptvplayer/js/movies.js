@@ -394,8 +394,6 @@ function showMovieDetails(movie) {
     const movieCast = document.getElementById('movie-cast');
     const movieDirector = document.getElementById('movie-director');
     const movieRelease = document.getElementById('movie-release');
-    const movieUrl = document.getElementById('movie-url');
-    const movieInfo = document.getElementById('movie-info');
     const trailerBtn = document.getElementById('trailer-btn');
     
     // Set title
@@ -435,7 +433,6 @@ function showMovieDetails(movie) {
     
     // Generate movie URL
     const playUrl = generateStreamUrl(movie, 'vod');
-    movieUrl.value = playUrl;
     window.currentMovieUrl = playUrl; // Store for play function
     
     // Show/hide trailer button
@@ -447,8 +444,6 @@ function showMovieDetails(movie) {
         window.currentTrailer = null;
     }
     
-    // Display movie info as formatted JSON
-    movieInfo.textContent = JSON.stringify(movie, null, 2);
     
     // Show movie breadcrumb
     document.getElementById('movie-breadcrumb').style.display = 'block';
@@ -605,35 +600,7 @@ function clearSearch() {
     searchInput.focus();
 }
 
-// Download movie
-function downloadMovie() {
-    if (window.currentMovieUrl && currentMovie) {
-        const movieTitle = currentMovie.title || currentMovie.name || 'movie';
-        const extension = currentMovie.container_extension || 'mp4';
-        const filename = `${sanitizeFilename(movieTitle)}.${extension}`;
-        
-        // Create a temporary link to trigger download
-        const link = document.createElement('a');
-        link.href = window.currentMovieUrl;
-        link.download = filename;
-        link.style.display = 'none';
-        
-        // Add link to document, click it, then remove it
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        showCacheStatus(`Starting download: ${filename}`, 'success');
-    } else {
-        showCacheStatus('No movie URL available for download', 'danger');
-    }
-}
 
-// Sanitize filename for download
-function sanitizeFilename(filename) {
-    // Remove invalid characters for filenames
-    return filename.replace(/[<>:"/\\|?*]/g, '_').replace(/\s+/g, '_');
-}
 
 // Copy movie URL
 function copyMovieUrl() {
@@ -645,15 +612,6 @@ function copyMovieUrl() {
     }
 }
 
-// Copy movie URL from Streamsection
-function copyMovieUrlTechnical() {
-    const movieUrl = document.getElementById('movie-url');
-    movieUrl.select();
-    document.execCommand('copy');
-    
-    const button = event.target.closest('button');
-    showButtonFeedback(button);
-}
 
 // Toggle trailer
 function toggleTrailer() {

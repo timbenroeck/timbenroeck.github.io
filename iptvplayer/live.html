@@ -288,33 +288,6 @@
                 </div>
             </div>
 
-            <!-- Stream Details -->
-            <div class="card">
-                <div class="card-header bg-light">
-                    <button class="btn btn-link text-decoration-none p-0 fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#technical-details" aria-expanded="false">
-                        <i class="fas fa-cog me-2"></i>Stream Details 
-                        <i class="fas fa-chevron-down float-end mt-1"></i>
-                    </button>
-                </div>
-                <div class="collapse" id="technical-details">
-                    <div class="card-body">
-                        <div class="mb-4">
-                            <h6 class="fw-bold">Channel Stream URL</h6>
-                            <div class="input-group">
-                                <input type="text" id="channel-url" class="form-control font-monospace" readonly>
-                                <button class="btn btn-outline-secondary" onclick="copyChannelUrlTechnical()">
-                                    <i class="fas fa-copy me-1"></i>Copy
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-bold">Channel Information (JSON)</h6>
-                            <pre id="channel-info" class="font-monospace small" style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; max-height: 300px; overflow-y: auto;"></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -541,13 +514,11 @@
             }
             
             const playUrl = generateStreamUrl(channel, 'live');
-            document.getElementById('channel-url').value = playUrl;
             window.currentChannelUrl = playUrl;
             
             // Load EPG data for this channel
             await loadChannelEPG(channel.stream_id);
             
-            document.getElementById('channel-info').textContent = JSON.stringify(channel, null, 2);
             
             // Show channel breadcrumb
             document.getElementById('channel-breadcrumb').style.display = 'block';
@@ -624,13 +595,6 @@
             }
         }
 
-        function copyChannelUrlTechnical() {
-            const channelUrl = document.getElementById('channel-url');
-            channelUrl.select();
-            document.execCommand('copy');
-            const button = event.target.closest('button');
-            showButtonFeedback(button);
-        }
 
         // Search functions
         function handleSearchKeypress(event) {

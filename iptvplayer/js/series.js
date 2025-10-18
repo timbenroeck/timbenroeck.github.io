@@ -499,16 +499,6 @@ function showSeriesDetails(seriesApiResponse, originalSeries) {
         displayEpisodes(episodes[currentSeason] || [], seasons.find(s => s.season_number === currentSeason));
     }
     
-    // Update Stream Details
-    const seriesUrlInput = document.getElementById('series-url');
-    const seriesInfoPre = document.getElementById('series-info');
-    
-    // Initially clear the URL (will be populated when an episode is selected)
-    seriesUrlInput.value = '';
-    seriesUrlInput.placeholder = 'Select an episode to see its stream URL';
-    
-    // Display full series info as JSON
-    seriesInfoPre.textContent = JSON.stringify(seriesApiResponse, null, 2);
     
     // Show series breadcrumb
     document.getElementById('series-breadcrumb').style.display = 'block';
@@ -654,11 +644,8 @@ function displayEpisodes(episodes, seasonInfo) {
                                     <button class="btn btn-primary btn-sm me-2" onclick="playEpisode('${episode.id}', ${episode.episode_num}, '${episode.title.replace(/'/g, "\\'")}')">
                                         <i class="fas fa-play me-1"></i>Play
                                     </button>
-                                    <button class="btn btn-outline-secondary btn-sm me-2" onclick="copyEpisodeUrl('${episode.id}', '${episode.container_extension}')">
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="copyEpisodeUrl('${episode.id}', '${episode.container_extension}')">
                                         <i class="fas fa-copy me-1"></i>Copy URL
-                                    </button>
-                                    <button class="btn btn-outline-success btn-sm" onclick="downloadEpisode('${episode.id}', '${episode.container_extension}', '${episode.title.replace(/'/g, "\\'")}')">
-                                        <i class="fas fa-download me-1"></i>Download
                                     </button>
                                 </div>
                             </div>
@@ -691,7 +678,7 @@ async function playEpisode(episodeId, episodeNum, episodeTitle) {
         return;
     }
     
-    const episodeUrl = `${auth.base_url}/series/${auth.username}/${auth.password}/${episodeId}.${episode.container_extension || 'mp4'}`;
+    const episodeUrl = generateStreamUrl({ id: episodeId, container_extension: episode.container_extension }, 'episode');
     
     // Show video container
     const videoContainer = document.getElementById('video-container');
@@ -727,8 +714,6 @@ async function playEpisode(episodeId, episodeNum, episodeTitle) {
             showCacheStatus(`Episode ${episodeNum} loaded - Click play to start`, 'info');
         });
         
-        // Update Stream Details with episode URL
-        document.getElementById('series-url').value = episodeUrl;
         
         // Scroll to video player
         videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -750,15 +735,13 @@ function stopEpisodePlayback() {
     // Hide video container
     videoContainer.style.display = 'none';
     
-    // Clear Stream Details URL
-    document.getElementById('series-url').value = '';
     
     showCacheStatus('Playback stopped', 'info');
 }
 
 // Copy episode URL to clipboard
 function copyEpisodeUrl(episodeId, containerExtension) {
-    const episodeUrl = `${auth.base_url}/series/${auth.username}/${auth.password}/${episodeId}.${containerExtension || 'mp4'}`;
+    const episodeUrl = generateStreamUrl({ id: episodeId, container_extension: containerExtension }, 'episode');
     
     navigator.clipboard.writeText(episodeUrl).then(() => {
         const button = event.target.closest('button');
@@ -797,30 +780,6 @@ function copyEpisodeUrl(episodeId, containerExtension) {
     });
 }
 
-// Download episode
-function downloadEpisode(episodeId, containerExtension, episodeTitle) {
-    const episodeUrl = `${auth.base_url}/series/${auth.username}/${auth.password}/${episodeId}.${containerExtension || 'mp4'}`;
-    const filename = `${sanitizeFilename(episodeTitle)}.${containerExtension || 'mp4'}`;
-    
-    // Create a temporary link to trigger download
-    const link = document.createElement('a');
-    link.href = episodeUrl;
-    link.download = filename;
-    link.style.display = 'none';
-    
-    // Add link to document, click it, then remove it
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showCacheStatus(`Starting download: ${filename}`, 'success');
-}
-
-// Sanitize filename for download
-function sanitizeFilename(filename) {
-    // Remove invalid characters for filenames
-    return filename.replace(/[<>:"/\\|?*]/g, '_').replace(/\s+/g, '_');
-}
 
 // Handle sort change
 function handleSortChange() {
@@ -898,15 +857,6 @@ function copySeriesUrl() {
     }
 }
 
-// Copy series URL from Streamsection
-function copySeriesUrlTechnical() {
-    const seriesUrl = document.getElementById('series-url');
-    seriesUrl.select();
-    document.execCommand('copy');
-    
-    const button = event.target.closest('button');
-    showButtonFeedback(button);
-}
 
 // Toggle trailer
 function toggleTrailer() {

@@ -518,7 +518,11 @@ function generateStreamUrl(stream, type) {
         case 'vod':
             return `${auth.base_url}/movie/${auth.username}/${auth.password}/${stream.stream_id}.${stream.container_extension || 'mp4'}`;
         case 'series':
-            return `${auth.base_url}/series/${auth.username}/${auth.password}/${stream.series_id}.m3u8`;
+            // For series, use the container extension or default to mp4
+            return `${auth.base_url}/series/${auth.username}/${auth.password}/${stream.series_id}.${stream.container_extension || 'mp4'}`;
+        case 'episode':
+            // For individual episodes, use episode ID and container extension
+            return `${auth.base_url}/series/${auth.username}/${auth.password}/${stream.id || stream.episode_id}.${stream.container_extension || 'mp4'}`;
         default:
             return '';
     }
@@ -635,6 +639,7 @@ function copyToClipboard(text) {
         return success;
     });
 }
+
 
 // Show feedback on button
 function showButtonFeedback(button, successText = 'Copied!', duration = 2000) {
@@ -874,12 +879,24 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
             videoElement.hlsInstance = null;
         }
         
-        const isHLS = streamUrl.includes('.m3u8');
+        // Enhanced file type detection
+        const url = streamUrl.toLowerCase();
+        const isHLS = url.includes('.m3u8') || url.includes('/hls/') || url.includes('playlist');
+        const isMP4 = url.includes('.mp4');
+        const isMKV = url.includes('.mkv');
+        const isAVI = url.includes('.avi');
+        const isMOV = url.includes('.mov');
+        const isWEBM = url.includes('.webm');
+        const isStandardVideo = isMP4 || isMKV || isAVI || isMOV || isWEBM;
+        
+        console.log(`Setting up video player for: ${streamUrl}`);
+        console.log(`Detected as HLS: ${isHLS}, Standard Video: ${isStandardVideo}`);
         
         if (isHLS) {
-            // Use HLS.js for .m3u8 files
+            // Use HLS.js for .m3u8 files and HLS streams
+            console.log('Using HLS.js player for HLS stream');
             const onSuccess = () => {
-                showCacheStatus(`${title} loaded successfully`, 'success');
+                showCacheStatus(`${title} loaded successfully (HLS)`, 'success');
                 resolve();
             };
             
@@ -890,27 +907,73 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
             
             videoElement.hlsInstance = createHLSPlayer(videoElement, streamUrl, onSuccess, onError);
         } else {
-            // Use regular video for other formats
+            // Use regular HTML5 video for MP4, MKV, AVI, MOV, WEBM and other standard formats
+            console.log('Using HTML5 video player for standard video format');
             videoElement.src = streamUrl;
             
+            // Set appropriate video attributes for better compatibility
+            videoElement.preload = 'metadata';
+            videoElement.setAttribute('crossorigin', 'anonymous');
+            
             const onCanPlay = () => {
-                showCacheStatus(`${title} loaded successfully`, 'success');
+                showCacheStatus(`${title} loaded successfully (HTML5)`, 'success');
                 videoElement.removeEventListener('canplay', onCanPlay);
+                videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
                 videoElement.removeEventListener('error', onVideoError);
                 resolve();
             };
             
-            const onVideoError = () => {
-                showCacheStatus(`Error loading ${title}`, 'danger');
-                videoElement.removeEventListener('canplay', onCanPlay);
-                videoElement.removeEventListener('error', onVideoError);
-                reject(new Error('Video load failed'));
+            const onLoadedMetadata = () => {
+                console.log('Video metadata loaded successfully');
+                showCacheStatus(`${title} metadata loaded`, 'info');
             };
             
+            const onVideoError = (e) => {
+                const errorMessage = getVideoErrorMessage(videoElement.error);
+                console.error('Video error:', errorMessage, e);
+                showCacheStatus(`Error loading ${title}: ${errorMessage}`, 'danger');
+                videoElement.removeEventListener('canplay', onCanPlay);
+                videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                videoElement.removeEventListener('error', onVideoError);
+                reject(new Error(`Video load failed: ${errorMessage}`));
+            };
+            
+            // Add event listeners
             videoElement.addEventListener('canplay', onCanPlay);
+            videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
             videoElement.addEventListener('error', onVideoError);
+            
+            // Set timeout to prevent hanging
+            setTimeout(() => {
+                if (videoElement.readyState < 3) { // HAVE_FUTURE_DATA
+                    console.warn('Video loading timeout, but continuing...');
+                    videoElement.removeEventListener('canplay', onCanPlay);
+                    videoElement.removeEventListener('loadedmetadata', onLoadedMetadata);
+                    videoElement.removeEventListener('error', onVideoError);
+                    showCacheStatus(`${title} ready for playback`, 'info');
+                    resolve();
+                }
+            }, 10000); // 10 second timeout
         }
     });
+}
+
+// Helper function to get meaningful error messages
+function getVideoErrorMessage(error) {
+    if (!error) return 'Unknown video error';
+    
+    switch (error.code) {
+        case error.MEDIA_ERR_ABORTED:
+            return 'Video playback was aborted';
+        case error.MEDIA_ERR_NETWORK:
+            return 'Network error occurred while loading video';
+        case error.MEDIA_ERR_DECODE:
+            return 'Video format is not supported or file is corrupted';
+        case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+            return 'Video format or codec is not supported';
+        default:
+            return `Video error (code: ${error.code})`;
+    }
 }
 
 function destroyVideoPlayer(videoElement) {
