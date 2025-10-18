@@ -73,18 +73,47 @@
             font-size: 1.1rem;
             margin-bottom: 3rem;
         }
-        .logout-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .btn-logout {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            border: none;
             color: white;
-            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
         }
-        .logout-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .btn-logout:hover {
+            background: linear-gradient(135deg, #ff3838, #ff2f2f);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(255, 71, 87, 0.3);
+        }
+        
+        /* Mobile responsive improvements */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 15px;
+            }
+            .main-card {
+                margin: 20px 0;
+                padding: 2rem 1.5rem !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-container {
+                padding: 15px 10px;
+            }
+            .main-card {
+                padding: 1.5rem 1rem !important;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .home-text {
+                display: none;
+            }
         }
         .welcome-message {
             background: rgba(255, 255, 255, 0.1);
@@ -186,9 +215,6 @@
     </style>
 </head>
 <body>
-    <button class="btn logout-btn" onclick="logout()">
-        <i class="fas fa-sign-out-alt me-1"></i>Logout
-    </button>
 
     <div class="container main-container">
         <div class="row justify-content-center w-100">
@@ -277,11 +303,27 @@
                         </div>
                         <div id="settings-content" class="info-box-content">
                             <div class="settings-controls">
-                                <button class="btn btn-clear-cache" onclick="clearAllCacheWithConfirm()">
+                                <div class="cache-info mb-3">
+                                    <div class="info-item">
+                                        <div class="info-label">Cache Type</div>
+                                        <div class="info-value" id="cache-type">Loading...</div>
+                                    </div>
+                                    <div class="info-item">
+                                        <div class="info-label">Cached Items</div>
+                                        <div class="info-value" id="cache-entries">-</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-clear-cache mb-3" onclick="clearAllCacheWithConfirm()">
                                     <i class="fas fa-trash-alt me-2"></i>Clear Cache
                                 </button>
-                                <p class="text-muted mt-2 mb-0">
+                                <p class="text-muted mb-3">
                                     <small>Clear all cached data to force fresh API calls</small>
+                                </p>
+                                <button class="btn btn-logout" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </button>
+                                <p class="text-muted mt-2 mb-0">
+                                    <small>Sign out and return to login page</small>
                                 </p>
                             </div>
                         </div>
@@ -299,6 +341,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="js/common.js"></script>
     <script>
         // Check authentication on page load
@@ -307,6 +350,7 @@
                 return; // Will redirect to login if auth fails
             }
             loadAccountInfo();
+            loadCacheInfo();
         };
 
         function navigateToLive() {
@@ -423,11 +467,35 @@
             }
         }
 
-        function clearAllCacheWithConfirm() {
+        async function loadCacheInfo() {
+            try {
+                const stats = await cacheDB.getCacheStats();
+                document.getElementById('cache-type').textContent = stats.type;
+                document.getElementById('cache-entries').textContent = stats.totalEntries;
+                
+                // Add visual indicator for cache type
+                const cacheTypeElement = document.getElementById('cache-type');
+                if (stats.type === 'IndexedDB') {
+                    cacheTypeElement.innerHTML = '<i class="fas fa-database text-success"></i> IndexedDB';
+                } else if (stats.type === 'localStorage') {
+                    cacheTypeElement.innerHTML = '<i class="fas fa-hdd text-warning"></i> localStorage';
+                } else {
+                    cacheTypeElement.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> ' + stats.type;
+                }
+            } catch (error) {
+                console.error('Error loading cache info:', error);
+                document.getElementById('cache-type').textContent = 'Error';
+                document.getElementById('cache-entries').textContent = '-';
+            }
+        }
+
+        async function clearAllCacheWithConfirm() {
             if (confirm('Are you sure you want to clear all cached data?\n\nThis will force fresh API calls but may slow down the next few page loads.')) {
                 try {
-                    clearAllCache();
+                    await clearAllCache();
                     showCacheStatus('All cached data has been cleared successfully!', 'success');
+                    // Refresh cache info display
+                    await loadCacheInfo();
                 } catch (error) {
                     console.error('Error clearing cache:', error);
                     showCacheStatus('Error clearing cache. Please try again.', 'error');

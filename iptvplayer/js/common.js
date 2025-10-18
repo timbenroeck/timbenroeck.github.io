@@ -75,10 +75,353 @@ function showCacheStatus(message, type = 'info') {
     }
 }
 
-// Cache management
+// Cache management with IndexedDB
 const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
 const CACHE_PREFIX = 'iptv_cache_';
+const DB_NAME = 'IPTVPlayerCache';
+const DB_VERSION = 1;
+const STORE_NAME = 'cache';
 
+// IndexedDB Cache System
+class IndexedDBCache {
+    constructor() {
+        this.db = null;
+        this.fallbackToLocalStorage = false;
+    }
+
+    async init() {
+        if (this.db) return this.db;
+        
+        try {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB failed, falling back to localStorage');
+                    this.fallbackToLocalStorage = true;
+                    resolve(null);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const store = db.createObjectStore(STORE_NAME, { keyPath: 'cacheKey' });
+                        store.createIndex('expiry', 'expiry', { unique: false });
+                        store.createIndex('action', 'action', { unique: false });
+                        store.createIndex('timestamp', 'timestamp', { unique: false });
+                    }
+                };
+                
+                request.onsuccess = (event) => {
+                    this.db = event.target.result;
+                    resolve(this.db);
+                };
+            });
+        } catch (error) {
+            console.warn('IndexedDB initialization failed:', error);
+            this.fallbackToLocalStorage = true;
+            return null;
+        }
+    }
+
+    async getFromCache(cacheKey) {
+        try {
+            if (this.fallbackToLocalStorage) {
+                return this.getFromLocalStorageCache(cacheKey);
+            }
+
+            await this.init();
+            if (!this.db) {
+                return this.getFromLocalStorageCache(cacheKey);
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            return new Promise((resolve) => {
+                const request = store.get(cacheKey);
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB read error, trying localStorage fallback');
+                    resolve(this.getFromLocalStorageCache(cacheKey));
+                };
+                
+                request.onsuccess = () => {
+                    const result = request.result;
+                    if (!result) {
+                        resolve(null);
+                        return;
+                    }
+                    
+                    const now = Date.now();
+                    if (now > result.expiry) {
+                        // Auto-cleanup expired entry
+                        this.deleteFromCache(cacheKey);
+                        resolve(null);
+                        return;
+                    }
+                    
+                    resolve(result.data);
+                };
+            });
+        } catch (error) {
+            console.warn('Cache read error:', error);
+            return this.getFromLocalStorageCache(cacheKey);
+        }
+    }
+
+    async setCache(cacheKey, data, action) {
+        try {
+            if (this.fallbackToLocalStorage) {
+                return this.setLocalStorageCache(cacheKey, data);
+            }
+
+            await this.init();
+            if (!this.db) {
+                return this.setLocalStorageCache(cacheKey, data);
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            const cacheEntry = {
+                cacheKey,
+                data,
+                action,
+                timestamp: Date.now(),
+                expiry: Date.now() + CACHE_DURATION
+            };
+            
+            return new Promise((resolve) => {
+                const request = store.put(cacheEntry);
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB write error, trying localStorage fallback');
+                    this.setLocalStorageCache(cacheKey, data);
+                    resolve();
+                };
+                
+                request.onsuccess = () => {
+                    resolve();
+                };
+            });
+        } catch (error) {
+            console.warn('Cache write error:', error);
+            this.setLocalStorageCache(cacheKey, data);
+        }
+    }
+
+    async deleteFromCache(cacheKey) {
+        try {
+            if (this.fallbackToLocalStorage) {
+                localStorage.removeItem(cacheKey);
+                return;
+            }
+
+            await this.init();
+            if (!this.db) {
+                localStorage.removeItem(cacheKey);
+                return;
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.delete(cacheKey);
+        } catch (error) {
+            console.warn('Cache delete error:', error);
+            localStorage.removeItem(cacheKey);
+        }
+    }
+
+    async clearOldCache() {
+        try {
+            if (this.fallbackToLocalStorage) {
+                return this.clearOldLocalStorageCache();
+            }
+
+            await this.init();
+            if (!this.db) {
+                return this.clearOldLocalStorageCache();
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const index = store.index('expiry');
+            
+            // Get all expired entries
+            const now = Date.now();
+            const range = IDBKeyRange.upperBound(now);
+            
+            return new Promise((resolve) => {
+                const request = index.openCursor(range);
+                
+                request.onsuccess = (event) => {
+                    const cursor = event.target.result;
+                    if (cursor) {
+                        cursor.delete();
+                        cursor.continue();
+                    } else {
+                        resolve();
+                    }
+                };
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB cleanup failed, trying localStorage cleanup');
+                    this.clearOldLocalStorageCache();
+                    resolve();
+                };
+            });
+        } catch (error) {
+            console.warn('Cache cleanup error:', error);
+            this.clearOldLocalStorageCache();
+        }
+    }
+
+    async clearAllCache() {
+        try {
+            if (this.fallbackToLocalStorage) {
+                return this.clearAllLocalStorageCache();
+            }
+
+            await this.init();
+            if (!this.db) {
+                return this.clearAllLocalStorageCache();
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            return new Promise((resolve) => {
+                const request = store.clear();
+                
+                request.onsuccess = () => {
+                    console.log('All IndexedDB cache cleared successfully');
+                    resolve();
+                };
+                
+                request.onerror = () => {
+                    console.warn('IndexedDB clear failed, trying localStorage cleanup');
+                    this.clearAllLocalStorageCache();
+                    resolve();
+                };
+            });
+        } catch (error) {
+            console.warn('Clear all cache error:', error);
+            this.clearAllLocalStorageCache();
+        }
+    }
+
+    // LocalStorage fallback methods
+    getFromLocalStorageCache(cacheKey) {
+        try {
+            const cached = localStorage.getItem(cacheKey);
+            if (!cached) return null;
+            
+            const { data, timestamp } = JSON.parse(cached);
+            const now = Date.now();
+            
+            if (now - timestamp > CACHE_DURATION) {
+                localStorage.removeItem(cacheKey);
+                return null;
+            }
+            
+            return data;
+        } catch (error) {
+            console.warn('LocalStorage cache read error:', error);
+            return null;
+        }
+    }
+
+    setLocalStorageCache(cacheKey, data) {
+        try {
+            const cacheData = {
+                data,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+        } catch (error) {
+            console.warn('LocalStorage cache write error:', error);
+            this.clearOldLocalStorageCache();
+        }
+    }
+
+    clearOldLocalStorageCache() {
+        try {
+            const keys = Object.keys(localStorage);
+            const cacheKeys = keys.filter(key => key.startsWith(CACHE_PREFIX));
+            const now = Date.now();
+            
+            cacheKeys.forEach(key => {
+                try {
+                    const cached = localStorage.getItem(key);
+                    if (cached) {
+                        const { timestamp } = JSON.parse(cached);
+                        if (now - timestamp > CACHE_DURATION) {
+                            localStorage.removeItem(key);
+                        }
+                    }
+                } catch (e) {
+                    localStorage.removeItem(key);
+                }
+            });
+        } catch (error) {
+            console.warn('LocalStorage cache cleanup error:', error);
+        }
+    }
+
+    clearAllLocalStorageCache() {
+        try {
+            const keys = Object.keys(localStorage);
+            const cacheKeys = keys.filter(key => key.startsWith(CACHE_PREFIX));
+            cacheKeys.forEach(key => localStorage.removeItem(key));
+        } catch (error) {
+            console.warn('LocalStorage clear all cache error:', error);
+        }
+    }
+
+    async getCacheStats() {
+        try {
+            if (this.fallbackToLocalStorage) {
+                const keys = Object.keys(localStorage);
+                const cacheKeys = keys.filter(key => key.startsWith(CACHE_PREFIX));
+                return {
+                    type: 'localStorage',
+                    totalEntries: cacheKeys.length,
+                    estimatedSize: JSON.stringify(localStorage).length
+                };
+            }
+
+            await this.init();
+            if (!this.db) {
+                return { type: 'unavailable', totalEntries: 0, estimatedSize: 0 };
+            }
+
+            const transaction = this.db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            
+            return new Promise((resolve) => {
+                const countRequest = store.count();
+                countRequest.onsuccess = () => {
+                    resolve({
+                        type: 'IndexedDB',
+                        totalEntries: countRequest.result,
+                        estimatedSize: 'N/A (IndexedDB managed)'
+                    });
+                };
+                countRequest.onerror = () => {
+                    resolve({ type: 'error', totalEntries: 0, estimatedSize: 0 });
+                };
+            });
+        } catch (error) {
+            return { type: 'error', totalEntries: 0, estimatedSize: 0 };
+        }
+    }
+}
+
+// Create global cache instance
+const cacheDB = new IndexedDBCache();
+
+// Cache utility functions (maintain API compatibility)
 function getCacheKey(action, params = {}) {
     const sortedParams = Object.keys(params).sort().reduce((result, key) => {
         result[key] = params[key];
@@ -93,73 +436,21 @@ function getCacheKey(action, params = {}) {
     }));
 }
 
-function getFromCache(cacheKey) {
-    try {
-        const cached = localStorage.getItem(cacheKey);
-        if (!cached) return null;
-        
-        const { data, timestamp } = JSON.parse(cached);
-        const now = Date.now();
-        
-        // Check if cache is still valid
-        if (now - timestamp > CACHE_DURATION) {
-            localStorage.removeItem(cacheKey);
-            return null;
-        }
-        
-        return data;
-    } catch (error) {
-        console.warn('Cache read error:', error);
-        return null;
-    }
+// Async wrapper functions for backward compatibility
+async function getFromCache(cacheKey) {
+    return await cacheDB.getFromCache(cacheKey);
 }
 
-function setCache(cacheKey, data) {
-    try {
-        const cacheData = {
-            data,
-            timestamp: Date.now()
-        };
-        localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-    } catch (error) {
-        console.warn('Cache write error:', error);
-        // If localStorage is full, clear old cache entries
-        clearOldCache();
-    }
+async function setCache(cacheKey, data, action = '') {
+    return await cacheDB.setCache(cacheKey, data, action);
 }
 
-function clearOldCache() {
-    try {
-        const keys = Object.keys(localStorage);
-        const cacheKeys = keys.filter(key => key.startsWith(CACHE_PREFIX));
-        const now = Date.now();
-        
-        cacheKeys.forEach(key => {
-            try {
-                const cached = localStorage.getItem(key);
-                if (cached) {
-                    const { timestamp } = JSON.parse(cached);
-                    if (now - timestamp > CACHE_DURATION) {
-                        localStorage.removeItem(key);
-                    }
-                }
-            } catch (e) {
-                localStorage.removeItem(key);
-            }
-        });
-    } catch (error) {
-        console.warn('Cache cleanup error:', error);
-    }
+async function clearOldCache() {
+    return await cacheDB.clearOldCache();
 }
 
-function clearAllCache() {
-    try {
-        const keys = Object.keys(localStorage);
-        const cacheKeys = keys.filter(key => key.startsWith(CACHE_PREFIX));
-        cacheKeys.forEach(key => localStorage.removeItem(key));
-    } catch (error) {
-        console.warn('Clear all cache error:', error);
-    }
+async function clearAllCache() {
+    return await cacheDB.clearAllCache();
 }
 
 // API functions with caching
@@ -172,11 +463,15 @@ async function fetchAPI(action, params = {}, useCache = true) {
     
     // Try to get from cache first
     if (useCache) {
-        const cachedData = getFromCache(cacheKey);
-        if (cachedData) {
-            console.log(`Cache hit for ${action}`);
-            showCacheStatus(`Loaded ${action} from cache (faster loading)`, 'success');
-            return cachedData;
+        try {
+            const cachedData = await getFromCache(cacheKey);
+            if (cachedData) {
+                console.log(`Cache hit for ${action}`);
+                showCacheStatus(`Loaded ${action} from cache (faster loading)`, 'success');
+                return cachedData;
+            }
+        } catch (error) {
+            console.warn(`Cache read failed for ${action}, proceeding with API call:`, error);
         }
     }
     
@@ -203,7 +498,11 @@ async function fetchAPI(action, params = {}, useCache = true) {
     
     // Cache the response
     if (useCache) {
-        setCache(cacheKey, data);
+        try {
+            await setCache(cacheKey, data, action);
+        } catch (error) {
+            console.warn(`Cache write failed for ${action}:`, error);
+        }
     }
     
     return data;
@@ -507,6 +806,123 @@ function getStateFromURL() {
 
 function clearURLState() {
     window.location.hash = '';
+}
+
+// HLS Video Player Functions
+function createHLSPlayer(videoElement, streamUrl, onSuccess, onError) {
+    // Check if HLS.js is supported
+    if (Hls.isSupported()) {
+        const hls = new Hls({
+            debug: false,
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 90
+        });
+        
+        hls.loadSource(streamUrl);
+        hls.attachMedia(videoElement);
+        
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            console.log('HLS manifest parsed successfully');
+            if (onSuccess) onSuccess();
+        });
+        
+        hls.on(Hls.Events.ERROR, function(event, data) {
+            console.error('HLS error:', data);
+            if (data.fatal) {
+                switch (data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        console.log('Network error, trying to recover...');
+                        hls.startLoad();
+                        break;
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.log('Media error, trying to recover...');
+                        hls.recoverMediaError();
+                        break;
+                    default:
+                        console.log('Fatal error, destroying HLS instance');
+                        hls.destroy();
+                        if (onError) onError('HLS playback failed: ' + data.reason);
+                        break;
+                }
+            }
+        });
+        
+        return hls;
+    } 
+    // Fallback for browsers with native HLS support (Safari)
+    else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = streamUrl;
+        console.log('Using native HLS support');
+        if (onSuccess) onSuccess();
+        return null; // No HLS.js instance needed
+    }
+    // No HLS support
+    else {
+        console.error('HLS not supported in this browser');
+        if (onError) onError('HLS streams are not supported in this browser');
+        return null;
+    }
+}
+
+function setupVideoPlayer(videoElement, streamUrl, title = '') {
+    return new Promise((resolve, reject) => {
+        // Clear any existing source
+        videoElement.src = '';
+        if (videoElement.hlsInstance) {
+            videoElement.hlsInstance.destroy();
+            videoElement.hlsInstance = null;
+        }
+        
+        const isHLS = streamUrl.includes('.m3u8');
+        
+        if (isHLS) {
+            // Use HLS.js for .m3u8 files
+            const onSuccess = () => {
+                showCacheStatus(`${title} loaded successfully`, 'success');
+                resolve();
+            };
+            
+            const onError = (error) => {
+                showCacheStatus(`Error loading ${title}: ${error}`, 'danger');
+                reject(new Error(error));
+            };
+            
+            videoElement.hlsInstance = createHLSPlayer(videoElement, streamUrl, onSuccess, onError);
+        } else {
+            // Use regular video for other formats
+            videoElement.src = streamUrl;
+            
+            const onCanPlay = () => {
+                showCacheStatus(`${title} loaded successfully`, 'success');
+                videoElement.removeEventListener('canplay', onCanPlay);
+                videoElement.removeEventListener('error', onVideoError);
+                resolve();
+            };
+            
+            const onVideoError = () => {
+                showCacheStatus(`Error loading ${title}`, 'danger');
+                videoElement.removeEventListener('canplay', onCanPlay);
+                videoElement.removeEventListener('error', onVideoError);
+                reject(new Error('Video load failed'));
+            };
+            
+            videoElement.addEventListener('canplay', onCanPlay);
+            videoElement.addEventListener('error', onVideoError);
+        }
+    });
+}
+
+function destroyVideoPlayer(videoElement) {
+    if (videoElement) {
+        videoElement.pause();
+        videoElement.src = '';
+        
+        if (videoElement.hlsInstance) {
+            videoElement.hlsInstance.destroy();
+            videoElement.hlsInstance = null;
+        }
+    }
 }
 
 // Initialize page

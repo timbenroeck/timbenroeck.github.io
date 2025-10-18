@@ -176,6 +176,8 @@ function displayCategories(categories) {
         categoriesList.appendChild(col);
     });
 
+    // Show main breadcrumb for category listing
+    document.getElementById('main-breadcrumb').style.display = 'block';
     categoriesView.style.display = 'block';
 }
 
@@ -274,7 +276,7 @@ function displaySeries(series, title) {
     sortSelector.value = currentSort;
     itemsPerPageSelect.value = itemsPerPage.toString();
 
-    // Update breadcrumb
+    // Show appropriate breadcrumb
     document.getElementById('breadcrumb').style.display = 'block';
     document.getElementById('breadcrumb-category').textContent = currentCategory.name;
 
@@ -497,7 +499,7 @@ function showSeriesDetails(seriesApiResponse, originalSeries) {
         displayEpisodes(episodes[currentSeason] || [], seasons.find(s => s.season_number === currentSeason));
     }
     
-    // Update technical details
+    // Update Stream Details
     const seriesUrlInput = document.getElementById('series-url');
     const seriesInfoPre = document.getElementById('series-info');
     
@@ -507,6 +509,11 @@ function showSeriesDetails(seriesApiResponse, originalSeries) {
     
     // Display full series info as JSON
     seriesInfoPre.textContent = JSON.stringify(seriesApiResponse, null, 2);
+    
+    // Show series breadcrumb
+    document.getElementById('series-breadcrumb').style.display = 'block';
+    document.getElementById('breadcrumb-series-category').querySelector('a').textContent = currentCategory ? currentCategory.name : 'All Categories';
+    document.getElementById('breadcrumb-series-name').textContent = info.name || originalSeries.name || 'Unknown Series';
     
     // Hide video/trailer containers initially
     document.getElementById('video-container').style.display = 'none';
@@ -677,7 +684,7 @@ function displayEpisodes(episodes, seasonInfo) {
 }
 
 // Play a specific episode
-function playEpisode(episodeId, episodeNum, episodeTitle) {
+async function playEpisode(episodeId, episodeNum, episodeTitle) {
     const episode = currentEpisodes.find(e => e.id === episodeId);
     if (!episode) {
         showCacheStatus('Episode not found', 'danger');
@@ -698,16 +705,20 @@ function playEpisode(episodeId, episodeNum, episodeTitle) {
     // Update title
     nowPlayingTitle.textContent = `Episode ${episodeNum}: ${episodeTitle}`;
     
-    // Set video source and show player
-    videoPlayer.src = episodeUrl;
+    // Show video container
     videoContainer.style.display = 'block';
     
-    // Set up event listeners for better user feedback
-    const onLoadStart = () => {
-        showCacheStatus(`Loading Episode ${episodeNum} - ${episodeTitle}...`, 'info');
-    };
+    // Show loading status
+    showCacheStatus(`Loading Episode ${episodeNum} - ${episodeTitle}...`, 'info');
     
-    const onCanPlay = () => {
+    try {
+        // Use the new HLS-capable video player
+        await setupVideoPlayer(
+            videoPlayer, 
+            episodeUrl, 
+            `Episode ${episodeNum} - ${episodeTitle}`
+        );
+        
         // Try to play automatically
         videoPlayer.play().then(() => {
             showCacheStatus(`Playing Episode ${episodeNum} - ${episodeTitle}`, 'success');
@@ -716,29 +727,16 @@ function playEpisode(episodeId, episodeNum, episodeTitle) {
             showCacheStatus(`Episode ${episodeNum} loaded - Click play to start`, 'info');
         });
         
-        // Remove event listeners
-        videoPlayer.removeEventListener('loadstart', onLoadStart);
-        videoPlayer.removeEventListener('canplay', onCanPlay);
-        videoPlayer.removeEventListener('error', onError);
-    };
-    
-    const onError = () => {
-        showCacheStatus(`Error loading Episode ${episodeNum}`, 'danger');
-        videoPlayer.removeEventListener('loadstart', onLoadStart);
-        videoPlayer.removeEventListener('canplay', onCanPlay);
-        videoPlayer.removeEventListener('error', onError);
-    };
-    
-    // Add event listeners
-    videoPlayer.addEventListener('loadstart', onLoadStart);
-    videoPlayer.addEventListener('canplay', onCanPlay);
-    videoPlayer.addEventListener('error', onError);
-    
-    // Update technical details with episode URL
-    document.getElementById('series-url').value = episodeUrl;
-    
-    // Scroll to video player
-    videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Update Stream Details with episode URL
+        document.getElementById('series-url').value = episodeUrl;
+        
+        // Scroll to video player
+        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+    } catch (error) {
+        console.error('Error setting up video player:', error);
+        showCacheStatus(`Error loading Episode ${episodeNum}: ${error.message}`, 'danger');
+    }
 }
 
 // Stop episode playback
@@ -746,14 +744,13 @@ function stopEpisodePlayback() {
     const videoContainer = document.getElementById('video-container');
     const videoPlayer = document.getElementById('video-player');
     
-    // Pause and clear video
-    videoPlayer.pause();
-    videoPlayer.src = '';
+    // Destroy video player (handles both HLS and regular video)
+    destroyVideoPlayer(videoPlayer);
     
     // Hide video container
     videoContainer.style.display = 'none';
     
-    // Clear technical details URL
+    // Clear Stream Details URL
     document.getElementById('series-url').value = '';
     
     showCacheStatus('Playback stopped', 'info');
@@ -901,7 +898,7 @@ function copySeriesUrl() {
     }
 }
 
-// Copy series URL from technical section
+// Copy series URL from Streamsection
 function copySeriesUrlTechnical() {
     const seriesUrl = document.getElementById('series-url');
     seriesUrl.select();
@@ -1039,4 +1036,6 @@ function hideAllViews() {
     document.getElementById('series-view').style.display = 'none';
     document.getElementById('series-details').style.display = 'none';
     document.getElementById('breadcrumb').style.display = 'none';
+    document.getElementById('main-breadcrumb').style.display = 'none';
+    document.getElementById('series-breadcrumb').style.display = 'none';
 }

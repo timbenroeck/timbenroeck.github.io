@@ -9,7 +9,7 @@ A simple, client-side web application for navigating and playing IPTV streams us
 ✅ **Category Browsing**: Organized content categories + "All Categories" option  
 ✅ **Advanced Search & Sort**: Real-time search by title, genre, cast, director, year with multiple sorting options  
 ✅ **Netflix-Style UI**: Cinematic movie/show detail pages with posters and metadata  
-✅ **Stream Details**: View rich content information with trailers and technical details  
+✅ **Stream Details**: View rich content information with trailers and Stream Details  
 ✅ **Video Player**: Built-in HTML5 video player with YouTube trailer integration  
 ✅ **High Performance**: Client-side caching, pagination, and optimized rendering for large catalogs  
 ✅ **Smart Caching**: 30-minute localStorage cache with automatic cleanup and cache status indicators  
@@ -49,7 +49,7 @@ A simple, client-side web application for navigating and playing IPTV streams us
    - Netflix-style detail page with poster, ratings, and synopsis
    - Watch YouTube trailers (when available)
    - Copy stream URL to clipboard
-   - View technical stream information (JSON)
+   - View stream information (JSON)
    - Play stream using built-in video player
 
 ## API Endpoints Used
@@ -78,11 +78,22 @@ The app generates playable URLs in these formats:
 
 ## Performance Features
 
-### **Smart Caching System**
-- **localStorage caching**: API responses cached for 30 minutes
-- **Automatic cleanup**: Old cache entries removed automatically
-- **Cache indicators**: Visual feedback showing when data loads from cache
-- **No server required**: All caching happens client-side
+### **Advanced IndexedDB Caching System**
+- **IndexedDB primary storage**: High-performance browser database with large storage capacity
+- **localStorage fallback**: Automatic fallback to localStorage if IndexedDB is unavailable
+- **30-minute cache duration**: API responses cached for optimal balance of performance and freshness
+- **Automatic cleanup**: Expired entries removed automatically on app startup and storage full events
+- **Cache statistics**: Real-time cache type and entry count display in settings
+- **Smart error handling**: Graceful degradation with comprehensive error recovery
+- **No server required**: All caching happens client-side with browser-native storage
+
+#### **StreamAdvantages of IndexedDB Over localStorage:**
+- **Storage Capacity**: ~1GB+ vs ~5-10MB with localStorage
+- **Performance**: Asynchronous operations (non-blocking) vs synchronous localStorage
+- **Data Types**: Direct object storage vs JSON stringification required for localStorage
+- **Querying**: Built-in indexing and range queries vs manual key iteration
+- **Transactions**: ACID transactions for data integrity
+- **Browser Support**: Universal support in modern browsers (IE10+)
 
 ### **Optimized for Large Catalogs**
 - **Pagination**: Large movie/series lists split into manageable pages (25/50/100/200 items)

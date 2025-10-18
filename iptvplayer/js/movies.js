@@ -171,6 +171,8 @@ function displayCategories(categories) {
         categoriesList.appendChild(col);
     });
 
+    // Show main breadcrumb for category listing
+    document.getElementById('main-breadcrumb').style.display = 'block';
     categoriesView.style.display = 'block';
 }
 
@@ -269,7 +271,7 @@ function displayMovies(movies, title) {
     sortSelector.value = currentSort;
     itemsPerPageSelect.value = itemsPerPage.toString();
 
-    // Update breadcrumb
+    // Show appropriate breadcrumb
     document.getElementById('breadcrumb').style.display = 'block';
     document.getElementById('breadcrumb-category').textContent = currentCategory.name;
 
@@ -448,6 +450,11 @@ function showMovieDetails(movie) {
     // Display movie info as formatted JSON
     movieInfo.textContent = JSON.stringify(movie, null, 2);
     
+    // Show movie breadcrumb
+    document.getElementById('movie-breadcrumb').style.display = 'block';
+    document.getElementById('breadcrumb-movie-category').querySelector('a').textContent = currentCategory ? currentCategory.name : 'All Categories';
+    document.getElementById('breadcrumb-movie-name').textContent = movie.title || movie.name || 'Unknown Movie';
+    
     // Reset video containers
     document.getElementById('video-container').style.display = 'none';
     document.getElementById('trailer-container').style.display = 'none';
@@ -456,7 +463,7 @@ function showMovieDetails(movie) {
 }
 
 // Play movie
-function playMovie() {
+async function playMovie() {
     if (window.currentMovieUrl) {
         const videoContainer = document.getElementById('video-container');
         const trailerContainer = document.getElementById('trailer-container');
@@ -466,16 +473,20 @@ function playMovie() {
         // Hide trailer if showing
         trailerContainer.style.display = 'none';
         
-        // Show video container and set source
+        // Show video container
         videoContainer.style.display = 'block';
-        videoPlayer.src = window.currentMovieUrl;
         
-        // Set up event listeners for better user feedback
-        const onLoadStart = () => {
-            showCacheStatus(`Loading movie...`, 'info');
-        };
+        // Show loading status
+        showCacheStatus(`Loading movie...`, 'info');
         
-        const onCanPlay = () => {
+        try {
+            // Use the new HLS-capable video player
+            await setupVideoPlayer(
+                videoPlayer, 
+                window.currentMovieUrl, 
+                currentMovie?.title || currentMovie?.name || 'movie'
+            );
+            
             // Try to play automatically
             videoPlayer.play().then(() => {
                 showCacheStatus(`Playing ${currentMovie?.title || currentMovie?.name || 'movie'}`, 'success');
@@ -484,30 +495,17 @@ function playMovie() {
                 showCacheStatus(`Movie loaded - Click play to start`, 'info');
             });
             
-            // Remove event listeners
-            videoPlayer.removeEventListener('loadstart', onLoadStart);
-            videoPlayer.removeEventListener('canplay', onCanPlay);
-            videoPlayer.removeEventListener('error', onError);
-        };
-        
-        const onError = () => {
-            showCacheStatus(`Error loading movie`, 'danger');
-            videoPlayer.removeEventListener('loadstart', onLoadStart);
-            videoPlayer.removeEventListener('canplay', onCanPlay);
-            videoPlayer.removeEventListener('error', onError);
-        };
-        
-        // Add event listeners
-        videoPlayer.addEventListener('loadstart', onLoadStart);
-        videoPlayer.addEventListener('canplay', onCanPlay);
-        videoPlayer.addEventListener('error', onError);
-        
-        // Update play button
-        playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
-        playBtn.onclick = stopMovie;
-        
-        // Scroll to video
-        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Update play button
+            playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
+            playBtn.onclick = stopMovie;
+            
+            // Scroll to video
+            videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+        } catch (error) {
+            console.error('Error setting up video player:', error);
+            showCacheStatus(`Error loading movie: ${error.message}`, 'danger');
+        }
     }
 }
 
@@ -519,12 +517,13 @@ function stopMovie() {
     
     // Hide video container and stop playback
     videoContainer.style.display = 'none';
-    videoPlayer.pause();
-    videoPlayer.src = '';
+    destroyVideoPlayer(videoPlayer);
     
     // Reset play button
     playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
     playBtn.onclick = playMovie;
+    
+    showCacheStatus('Playback stopped', 'info');
 }
 
 // Pagination control functions
@@ -646,7 +645,7 @@ function copyMovieUrl() {
     }
 }
 
-// Copy movie URL from technical section
+// Copy movie URL from Streamsection
 function copyMovieUrlTechnical() {
     const movieUrl = document.getElementById('movie-url');
     movieUrl.select();
@@ -709,4 +708,6 @@ function hideAllViews() {
     document.getElementById('movies-view').style.display = 'none';
     document.getElementById('movie-details').style.display = 'none';
     document.getElementById('breadcrumb').style.display = 'none';
+    document.getElementById('main-breadcrumb').style.display = 'none';
+    document.getElementById('movie-breadcrumb').style.display = 'none';
 }
