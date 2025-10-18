@@ -813,10 +813,50 @@ function clearURLState() {
     window.location.hash = '';
 }
 
+// Detect iOS devices
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+// Detect Safari browser
+function isSafari() {
+    return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+}
+
 // HLS Video Player Functions
 function createHLSPlayer(videoElement, streamUrl, onSuccess, onError) {
-    // Check if HLS.js is supported
-    if (Hls.isSupported()) {
+    // iOS and Safari have native HLS support - use that instead of HLS.js
+    if (isIOS() || (isSafari() && videoElement.canPlayType('application/vnd.apple.mpegurl'))) {
+        console.log('Using native HLS support (iOS/Safari)');
+        videoElement.src = streamUrl;
+        
+        // Add iOS-specific attributes
+        videoElement.setAttribute('playsinline', 'true');
+        videoElement.setAttribute('webkit-playsinline', 'true');
+        
+        const onCanPlay = () => {
+            console.log('Native HLS ready');
+            videoElement.removeEventListener('canplay', onCanPlay);
+            videoElement.removeEventListener('error', onVideoError);
+            if (onSuccess) onSuccess();
+        };
+        
+        const onVideoError = (e) => {
+            console.error('Native HLS error:', e);
+            videoElement.removeEventListener('canplay', onCanPlay);
+            videoElement.removeEventListener('error', onVideoError);
+            if (onError) onError('Native HLS playback failed');
+        };
+        
+        videoElement.addEventListener('canplay', onCanPlay);
+        videoElement.addEventListener('error', onVideoError);
+        
+        return null; // No HLS.js instance needed
+    }
+    // Check if HLS.js is supported (non-iOS/Safari browsers)
+    else if (Hls.isSupported()) {
+        console.log('Using HLS.js for HLS playback');
         const hls = new Hls({
             debug: false,
             enableWorker: true,
@@ -854,13 +894,6 @@ function createHLSPlayer(videoElement, streamUrl, onSuccess, onError) {
         });
         
         return hls;
-    } 
-    // Fallback for browsers with native HLS support (Safari)
-    else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-        videoElement.src = streamUrl;
-        console.log('Using native HLS support');
-        if (onSuccess) onSuccess();
-        return null; // No HLS.js instance needed
     }
     // No HLS support
     else {
@@ -892,6 +925,9 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
         console.log(`Setting up video player for: ${streamUrl}`);
         console.log(`Detected as HLS: ${isHLS}, Standard Video: ${isStandardVideo}`);
         
+        // Debug mobile video issues
+        debugMobileVideo(videoElement, streamUrl);
+        
         if (isHLS) {
             // Use HLS.js for .m3u8 files and HLS streams
             console.log('Using HLS.js player for HLS stream');
@@ -914,6 +950,13 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
             // Set appropriate video attributes for better compatibility
             videoElement.preload = 'metadata';
             videoElement.setAttribute('crossorigin', 'anonymous');
+            
+            // Add iOS-specific attributes for better mobile compatibility
+            if (isIOS()) {
+                videoElement.setAttribute('playsinline', 'true');
+                videoElement.setAttribute('webkit-playsinline', 'true');
+                console.log('Applied iOS-specific video attributes');
+            }
             
             const onCanPlay = () => {
                 showCacheStatus(`${title} loaded successfully (HTML5)`, 'success');
@@ -943,7 +986,8 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
             videoElement.addEventListener('loadedmetadata', onLoadedMetadata);
             videoElement.addEventListener('error', onVideoError);
             
-            // Set timeout to prevent hanging
+            // Set timeout to prevent hanging (shorter for mobile)
+            const timeout = isIOS() ? 15000 : 10000; // 15s for iOS, 10s for others
             setTimeout(() => {
                 if (videoElement.readyState < 3) { // HAVE_FUTURE_DATA
                     console.warn('Video loading timeout, but continuing...');
@@ -953,7 +997,7 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
                     showCacheStatus(`${title} ready for playback`, 'info');
                     resolve();
                 }
-            }, 10000); // 10 second timeout
+            }, timeout);
         }
     });
 }
@@ -962,17 +1006,50 @@ function setupVideoPlayer(videoElement, streamUrl, title = '') {
 function getVideoErrorMessage(error) {
     if (!error) return 'Unknown video error';
     
+    const isMobile = isIOS() || /Android/i.test(navigator.userAgent);
+    
     switch (error.code) {
         case error.MEDIA_ERR_ABORTED:
             return 'Video playback was aborted';
         case error.MEDIA_ERR_NETWORK:
-            return 'Network error occurred while loading video';
+            return isMobile ? 
+                'Network error - Check your internet connection and try again' : 
+                'Network error occurred while loading video';
         case error.MEDIA_ERR_DECODE:
-            return 'Video format is not supported or file is corrupted';
+            return isMobile ? 
+                'Video format not supported on this device' : 
+                'Video format is not supported or file is corrupted';
         case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            return 'Video format or codec is not supported';
+            return isMobile ? 
+                'Video format not supported on mobile - try a different video' : 
+                'Video format or codec is not supported';
         default:
-            return `Video error (code: ${error.code})`;
+            return isMobile ? 
+                `Video error on mobile device (${error.code}) - try refreshing` : 
+                `Video error (code: ${error.code})`;
+    }
+}
+
+// Add mobile-specific debugging helper
+function debugMobileVideo(videoElement, streamUrl) {
+    if (isIOS()) {
+        console.log('🍎 iOS Video Debug Info:', {
+            url: streamUrl,
+            canPlayType: {
+                mp4: videoElement.canPlayType('video/mp4'),
+                hls: videoElement.canPlayType('application/vnd.apple.mpegurl'),
+                webm: videoElement.canPlayType('video/webm')
+            },
+            attributes: {
+                playsinline: videoElement.hasAttribute('playsinline'),
+                controls: videoElement.hasAttribute('controls'),
+                preload: videoElement.preload,
+                crossOrigin: videoElement.crossOrigin
+            },
+            readyState: videoElement.readyState,
+            networkState: videoElement.networkState,
+            userAgent: navigator.userAgent
+        });
     }
 }
 

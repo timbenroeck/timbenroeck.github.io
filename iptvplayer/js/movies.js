@@ -482,13 +482,17 @@ async function playMovie() {
                 currentMovie?.title || currentMovie?.name || 'movie'
             );
             
-            // Try to play automatically
-            videoPlayer.play().then(() => {
-                showCacheStatus(`Playing ${currentMovie?.title || currentMovie?.name || 'movie'}`, 'success');
-            }).catch(error => {
-                console.log('Autoplay prevented by browser:', error);
-                showCacheStatus(`Movie loaded - Click play to start`, 'info');
-            });
+            // Try to play automatically (except on iOS which requires user interaction)
+            if (!isIOS()) {
+                videoPlayer.play().then(() => {
+                    showCacheStatus(`Playing ${currentMovie?.title || currentMovie?.name || 'movie'}`, 'success');
+                }).catch(error => {
+                    console.log('Autoplay prevented by browser:', error);
+                    showCacheStatus(`Movie loaded - Click play to start`, 'info');
+                });
+            } else {
+                showCacheStatus(`Movie loaded - Click play to start (iOS)`, 'info');
+            }
             
             // Update play button
             playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';

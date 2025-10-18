@@ -282,7 +282,7 @@
             <!-- Video Player -->
             <div id="video-container" class="mb-4" style="display: none;">
                 <div class="ratio ratio-16x9">
-                    <video id="video-player" controls style="background: #000;">
+                    <video id="video-player" controls playsinline webkit-playsinline style="background: #000;" preload="metadata" crossorigin="anonymous">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -550,13 +550,17 @@
                         currentChannel?.name || 'Live Channel'
                     );
                     
-                    // Try to play automatically
-                    videoPlayer.play().then(() => {
-                        showCacheStatus(`Playing ${currentChannel?.name || 'channel'}`, 'success');
-                    }).catch(error => {
-                        console.log('Autoplay prevented by browser:', error);
-                        showCacheStatus(`Channel loaded - Click play to start`, 'info');
-                    });
+                    // Try to play automatically (except on iOS which requires user interaction)
+                    if (!isIOS()) {
+                        videoPlayer.play().then(() => {
+                            showCacheStatus(`Playing ${currentChannel?.name || 'channel'}`, 'success');
+                        }).catch(error => {
+                            console.log('Autoplay prevented by browser:', error);
+                            showCacheStatus(`Channel loaded - Click play to start`, 'info');
+                        });
+                    } else {
+                        showCacheStatus(`Channel loaded - Click play to start (iOS)`, 'info');
+                    }
                     
                     playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
                     playBtn.onclick = stopChannel;

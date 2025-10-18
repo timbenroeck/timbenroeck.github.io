@@ -706,13 +706,17 @@ async function playEpisode(episodeId, episodeNum, episodeTitle) {
             `Episode ${episodeNum} - ${episodeTitle}`
         );
         
-        // Try to play automatically
-        videoPlayer.play().then(() => {
-            showCacheStatus(`Playing Episode ${episodeNum} - ${episodeTitle}`, 'success');
-        }).catch(error => {
-            console.log('Autoplay prevented by browser:', error);
-            showCacheStatus(`Episode ${episodeNum} loaded - Click play to start`, 'info');
-        });
+        // Try to play automatically (except on iOS which requires user interaction)
+        if (!isIOS()) {
+            videoPlayer.play().then(() => {
+                showCacheStatus(`Playing Episode ${episodeNum} - ${episodeTitle}`, 'success');
+            }).catch(error => {
+                console.log('Autoplay prevented by browser:', error);
+                showCacheStatus(`Episode ${episodeNum} loaded - Click play to start`, 'info');
+            });
+        } else {
+            showCacheStatus(`Episode ${episodeNum} loaded - Click play to start (iOS)`, 'info');
+        }
         
         
         // Scroll to video player
