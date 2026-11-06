@@ -1,0 +1,1675 @@
+{
+  "questions": [
+    {
+      "id": "e6d9fe76-2423-43ce-9c2e-cdd4c363b1cb",
+      "type": "in-which-book",
+      "text": "does a character swing a branch like a sword at a wolf?",
+      "answer": null,
+      "page": 31,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5c7a7186-d9be-4cbb-8526-141507b9bf63",
+        "bookKey": "snow-and-rose",
+        "title": "Snow and Rose",
+        "author": "Emily Winfield Martin",
+        "coverPath": "/covers/2026-2027/3-5/snow-and-rose.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 213,
+        "chapterCount": 19,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "75cf96ec-16ab-441f-b126-b21ada3207db",
+      "type": "in-which-book",
+      "text": "are test results scanned and sent to Ames, Iowa?",
+      "answer": null,
+      "page": 46,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "d887afa4-1e1b-4a02-b419-542508f5dc09",
+        "bookKey": "connect-the-stars",
+        "title": "Connect the Stars",
+        "author": "Marisa de los Santos and David Teague",
+        "coverPath": "/covers/2026-2027/3-5/connect-the-stars.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": 17,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "e4745c8a-678f-4f82-a10b-eb17dbba3f0c",
+      "type": "in-which-book",
+      "text": "does a character visit a Turret Room?",
+      "answer": null,
+      "page": 12,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0f7a3e93-cc63-464a-bb83-9b34f023eccd",
+        "bookKey": "murder-at-the-museum",
+        "title": "Murder at the Museum",
+        "author": "Alasdair Beckett-King",
+        "coverPath": "/covers/2026-2027/3-5/murder-at-the-museum.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": 27,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "3a644ae4-f1b7-403f-ace5-ff74206a7591",
+      "type": "in-which-book",
+      "text": "does a character try to walk along the curb without falling on the way home?",
+      "answer": null,
+      "page": 33,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "daa60ea0-5444-4d40-98d8-5f13ba093f23",
+        "bookKey": "frindle",
+        "title": "Frindle",
+        "author": "Andrew Clements",
+        "coverPath": "/covers/2026-2027/3-5/frindle.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 105,
+        "chapterCount": 15,
+        "genre": "Classic, Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "be3b4ab1-72bb-4af9-8b95-7330b8cded19",
+      "type": "in-which-book",
+      "text": "do tourists flock to see the saber-toothed bat, the diplodingo, and the mighty flamingopotatmus?",
+      "answer": null,
+      "page": 4,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0f7a3e93-cc63-464a-bb83-9b34f023eccd",
+        "bookKey": "murder-at-the-museum",
+        "title": "Murder at the Museum",
+        "author": "Alasdair Beckett-King",
+        "coverPath": "/covers/2026-2027/3-5/murder-at-the-museum.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": 27,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "bba5c47b-08e1-4cfb-b23a-d52145593254",
+      "type": "in-which-book",
+      "text": "has someone been able to vomit on command since they were 3?",
+      "answer": null,
+      "page": 100,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "65ccdb46-db31-4c3c-927f-01d2f1d40a32",
+        "bookKey": "misadventures-of-the-family-fletcher",
+        "title": "The Misadventures of the Family Fletcher",
+        "author": "Dana Alison Levy",
+        "coverPath": "/covers/2026-2027/3-5/misadventures-of-the-family-fletcher.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": null,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "902cdb74-f799-4b96-b8c7-0d6c6d2bdf69",
+      "type": "in-which-book",
+      "text": "does a character drive a car named Betsy?",
+      "answer": null,
+      "page": 13,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0277005f-b8d8-4859-a6f0-2b9b7bbc1582",
+        "bookKey": "its-the-end-of-the-world-and-im-in-my-bathing-suit",
+        "title": "It's the End of the World and I'm in My Bathing Suit",
+        "author": "Justin A. Reynolds",
+        "coverPath": "/covers/2026-2027/3-5/its-the-end-of-the-world-and-im-in-my-bathing-suit.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 35,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "cedar-mill",
+        "name": "Cedar Mill Public Library",
+        "link": "https://library.cedarmill.org/kids/obob/"
+      }
+    },
+    {
+      "id": "91ef74ec-5002-4334-aa20-a4f649b7acf3",
+      "type": "in-which-book",
+      "text": "does someone attend Dolley Madison Middle School?",
+      "answer": null,
+      "page": 16,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "d887afa4-1e1b-4a02-b419-542508f5dc09",
+        "bookKey": "connect-the-stars",
+        "title": "Connect the Stars",
+        "author": "Marisa de los Santos and David Teague",
+        "coverPath": "/covers/2026-2027/3-5/connect-the-stars.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": 17,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "70dc5dc6-d506-4d20-9380-90931ae5666d",
+      "type": "in-which-book",
+      "text": "does a character eat corn on the cob?",
+      "answer": null,
+      "page": 18,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "f66beada-e501-492a-a39a-12647f133f3f",
+        "bookKey": "witch-boy",
+        "title": "The Witch Boy",
+        "author": "Lee Knox Ostertag",
+        "coverPath": "/covers/2026-2027/3-5/witch-boy.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 224,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "295418ab-edfc-4e64-a5da-268de9169039",
+      "type": "in-which-book",
+      "text": "is the main character's mom an attorney?",
+      "answer": null,
+      "page": 46,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0277005f-b8d8-4859-a6f0-2b9b7bbc1582",
+        "bookKey": "its-the-end-of-the-world-and-im-in-my-bathing-suit",
+        "title": "It's the End of the World and I'm in My Bathing Suit",
+        "author": "Justin A. Reynolds",
+        "coverPath": "/covers/2026-2027/3-5/its-the-end-of-the-world-and-im-in-my-bathing-suit.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 35,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "1364150b-6e5a-479d-a090-746d89f10a3a",
+      "type": "in-which-book",
+      "text": "is the thirteenth chapter skipped because it is unlucky?",
+      "answer": null,
+      "page": 164,
+      "pageLabel": "164, 165",
+      "section": "body",
+      "book": {
+        "id": "79de9e3a-f6e2-491a-b595-70862372db1b",
+        "bookKey": "magic-misfits",
+        "title": "The Magic Misfits",
+        "author": "Neil Patrick Harris",
+        "coverPath": "/covers/2026-2027/3-5/magic-misfits.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 253,
+        "chapterCount": 16,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "e8d93a8e-dca4-4764-8f9b-ef5a4f73b5b1",
+      "type": "in-which-book",
+      "text": "do school bus drivers threaten to go on strike?",
+      "answer": null,
+      "page": 48,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "daa60ea0-5444-4d40-98d8-5f13ba093f23",
+        "bookKey": "frindle",
+        "title": "Frindle",
+        "author": "Andrew Clements",
+        "coverPath": "/covers/2026-2027/3-5/frindle.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 105,
+        "chapterCount": 15,
+        "genre": "Classic, Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "2159431a-f309-440f-a334-015c0ce3c434",
+      "type": "in-which-book",
+      "text": "does someone accuse another of internet brownie points?",
+      "answer": null,
+      "page": 45,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "729ef1fc-b78d-4790-b8b9-7f45fe327220",
+        "bookKey": "kind-of-spark",
+        "title": "A Kind of Spark",
+        "author": "Elle McNicoll",
+        "coverPath": "/covers/2026-2027/3-5/kind-of-spark.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 193,
+        "chapterCount": 21,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "54b1de24-8dca-4eda-a5a8-7e6b06018604",
+      "type": "in-which-book",
+      "text": "does a character look \"about ten seconds from a Vesuvius-sized blow up\"?",
+      "answer": null,
+      "page": 207,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "65ccdb46-db31-4c3c-927f-01d2f1d40a32",
+        "bookKey": "misadventures-of-the-family-fletcher",
+        "title": "The Misadventures of the Family Fletcher",
+        "author": "Dana Alison Levy",
+        "coverPath": "/covers/2026-2027/3-5/misadventures-of-the-family-fletcher.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": null,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "dc944a16-c620-421f-a480-e918f5b3a8b1",
+      "type": "in-which-book",
+      "text": "do characters plan a \"tail-out\"?",
+      "answer": null,
+      "page": 133,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "cc2b4f3f-5de1-4e10-a68b-d0cffb9f49e1",
+        "bookKey": "dogtown",
+        "title": "Dogtown",
+        "author": "Katherine Applegate and Gennifer Choldenko",
+        "coverPath": "/covers/2026-2027/3-5/dogtown.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 352,
+        "chapterCount": 131,
+        "genre": "Science Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "1451b58a-8d36-428c-ad92-4b41428b2f18",
+      "type": "in-which-book",
+      "text": "does a character twitch the corner of their mouth when they are not telling the whole story?",
+      "answer": null,
+      "page": 2,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "9a8ae617-2f52-4d3a-8f1c-b4cfed58bf0e",
+        "bookKey": "guardian-test",
+        "title": "The Guardian Test",
+        "author": "Christina Soontornvat",
+        "coverPath": "/covers/2026-2027/3-5/guardian-test.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 160,
+        "chapterCount": 30,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "835760e8-5d3c-464e-8954-60d41b1d0816",
+      "type": "in-which-book",
+      "text": "are someone's hands tremoring?",
+      "answer": null,
+      "page": 56,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "729ef1fc-b78d-4790-b8b9-7f45fe327220",
+        "bookKey": "kind-of-spark",
+        "title": "A Kind of Spark",
+        "author": "Elle McNicoll",
+        "coverPath": "/covers/2026-2027/3-5/kind-of-spark.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 193,
+        "chapterCount": 21,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "cddc10c5-d9b0-4feb-96e0-3c440e64238f",
+      "type": "in-which-book",
+      "text": "does a camp grow strawberries to support itself?",
+      "answer": null,
+      "page": 76,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5162102c-4172-419d-ad93-eade7f779b93",
+        "bookKey": "lightning-thief",
+        "title": "The Lightning Thief",
+        "author": "Rick Riordan",
+        "coverPath": "/covers/2026-2027/3-5/lightning-thief.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 377,
+        "chapterCount": 22,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "59e21e74-2d4e-4000-84d7-aa233176e6e8",
+      "type": "in-which-book",
+      "text": "is it against witch law to eat another witch?",
+      "answer": null,
+      "page": 68,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "29647fdd-a9d6-4914-bcc7-f750e5a3fae3",
+        "bookKey": "grace-of-wild-things",
+        "title": "The Grace of Wild Things",
+        "author": "Heather Fawcett",
+        "coverPath": "/covers/2026-2027/3-5/grace-of-wild-things.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "e20d077c-7d6a-4bc7-9861-229dabd18b90",
+      "type": "in-which-book",
+      "text": "do characters go ghost crabbing?",
+      "answer": null,
+      "page": 144,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0e3fcd65-3efd-487b-841c-f2d4c0e8c222",
+        "bookKey": "caterpillar-summer",
+        "title": "Caterpillar Summer",
+        "author": "Gillian McDunn",
+        "coverPath": "/covers/2026-2027/3-5/caterpillar-summer.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 320,
+        "chapterCount": 34,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "cedar-mill",
+        "name": "Cedar Mill Public Library",
+        "link": "https://library.cedarmill.org/kids/obob/"
+      }
+    },
+    {
+      "id": "6bc05932-6a27-495d-9503-6cc5addb2f83",
+      "type": "in-which-book",
+      "text": "does a character know which mushrooms were good to eat and which were full of poison?",
+      "answer": null,
+      "page": 70,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5c7a7186-d9be-4cbb-8526-141507b9bf63",
+        "bookKey": "snow-and-rose",
+        "title": "Snow and Rose",
+        "author": "Emily Winfield Martin",
+        "coverPath": "/covers/2026-2027/3-5/snow-and-rose.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 213,
+        "chapterCount": 19,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "b5751bc5-a641-43be-b45b-a0f6f76e1ec8",
+      "type": "in-which-book",
+      "text": "is there a candy that tastes like licorice and rootbeer?",
+      "answer": null,
+      "page": 72,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "4ff5c561-6ac2-431b-9047-2c7c401c72c5",
+        "bookKey": "light-and-air",
+        "title": "Light and Air",
+        "author": "Mindy Nichols Wendell",
+        "coverPath": "/covers/2026-2027/3-5/light-and-air.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 192,
+        "chapterCount": null,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "2b088261-4ccb-4b23-b7ec-20136473b6b4",
+      "type": "in-which-book",
+      "text": "does a character ride a ride called Bosso's Blender?",
+      "answer": null,
+      "page": 119,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "79de9e3a-f6e2-491a-b595-70862372db1b",
+        "bookKey": "magic-misfits",
+        "title": "The Magic Misfits",
+        "author": "Neil Patrick Harris",
+        "coverPath": "/covers/2026-2027/3-5/magic-misfits.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 253,
+        "chapterCount": 16,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "684b053b-7313-413d-be06-0f860edad375",
+      "type": "in-which-book",
+      "text": "does a character think that socks are the best part of laundry, especially when they match up.",
+      "answer": null,
+      "page": 189,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0e3fcd65-3efd-487b-841c-f2d4c0e8c222",
+        "bookKey": "caterpillar-summer",
+        "title": "Caterpillar Summer",
+        "author": "Gillian McDunn",
+        "coverPath": "/covers/2026-2027/3-5/caterpillar-summer.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 320,
+        "chapterCount": 34,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "89a63f53-9ff8-49cd-82cc-da7a702740f5",
+      "type": "in-which-book",
+      "text": "do characters attend a Halloween parade?",
+      "answer": null,
+      "page": 79,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "4ff5c561-6ac2-431b-9047-2c7c401c72c5",
+        "bookKey": "light-and-air",
+        "title": "Light and Air",
+        "author": "Mindy Nichols Wendell",
+        "coverPath": "/covers/2026-2027/3-5/light-and-air.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 192,
+        "chapterCount": null,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "39bb6524-4b88-44c3-86b2-d2d9cb09119e",
+      "type": "in-which-book",
+      "text": "does a character say, \"I hate asparagus, too?\"",
+      "answer": null,
+      "page": 229,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "8a47b26e-4fd1-40d9-acf3-8b85f90d8dfd",
+        "bookKey": "esperanza-rising",
+        "title": "Esperanza Rising",
+        "author": "Pam Mu\u00f1oz Ryan",
+        "coverPath": "/covers/2026-2027/3-5/esperanza-rising.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 14,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "dba186a4-ecbb-401b-b7b8-2637f7e744c0",
+      "type": "in-which-book",
+      "text": "does a character have a scar under their right eye?",
+      "answer": null,
+      "page": 84,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5162102c-4172-419d-ad93-eade7f779b93",
+        "bookKey": "lightning-thief",
+        "title": "The Lightning Thief",
+        "author": "Rick Riordan",
+        "coverPath": "/covers/2026-2027/3-5/lightning-thief.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 377,
+        "chapterCount": 22,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "73fa21c6-bf1c-4a4b-98b1-433134ec2003",
+      "type": "in-which-book",
+      "text": "does a character receive a gift of a seed packet from home?",
+      "answer": null,
+      "page": 146,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "9a8ae617-2f52-4d3a-8f1c-b4cfed58bf0e",
+        "bookKey": "guardian-test",
+        "title": "The Guardian Test",
+        "author": "Christina Soontornvat",
+        "coverPath": "/covers/2026-2027/3-5/guardian-test.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 160,
+        "chapterCount": 30,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "a23944a7-e78e-4263-be59-2b607ff8acbe",
+      "type": "in-which-book",
+      "text": "is there an UPS driver?",
+      "answer": null,
+      "page": 322,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "cc2b4f3f-5de1-4e10-a68b-d0cffb9f49e1",
+        "bookKey": "dogtown",
+        "title": "Dogtown",
+        "author": "Katherine Applegate and Gennifer Choldenko",
+        "coverPath": "/covers/2026-2027/3-5/dogtown.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 352,
+        "chapterCount": 131,
+        "genre": "Science Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "edf58466-d508-47e1-9698-9af6b1593131",
+      "type": "in-which-book",
+      "text": "is someone said to love money and power more than people?",
+      "answer": null,
+      "page": 19,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "8a47b26e-4fd1-40d9-acf3-8b85f90d8dfd",
+        "bookKey": "esperanza-rising",
+        "title": "Esperanza Rising",
+        "author": "Pam Mu\u00f1oz Ryan",
+        "coverPath": "/covers/2026-2027/3-5/esperanza-rising.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 14,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "87de902e-73f7-4b96-8855-20b77dd3c4c2",
+      "type": "in-which-book",
+      "text": "does a character light candles with purple flames?",
+      "answer": null,
+      "page": 185,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "f66beada-e501-492a-a39a-12647f133f3f",
+        "bookKey": "witch-boy",
+        "title": "The Witch Boy",
+        "author": "Lee Knox Ostertag",
+        "coverPath": "/covers/2026-2027/3-5/witch-boy.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 224,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "8ebe5af1-263c-4be8-bbd5-ad7fa8c88439",
+      "type": "in-which-book",
+      "text": "does a character need to find \"a pitcher of midnight?\"",
+      "answer": null,
+      "page": 55,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "29647fdd-a9d6-4914-bcc7-f750e5a3fae3",
+        "bookKey": "grace-of-wild-things",
+        "title": "The Grace of Wild Things",
+        "author": "Heather Fawcett",
+        "coverPath": "/covers/2026-2027/3-5/grace-of-wild-things.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "867566cd-bbd4-4318-a238-e468f18dd4e7",
+      "type": "content",
+      "text": "What is the three-word title of Bonnie's favorite podcast?",
+      "answer": "History's Mysterious Mysteries",
+      "page": 120,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0f7a3e93-cc63-464a-bb83-9b34f023eccd",
+        "bookKey": "murder-at-the-museum",
+        "title": "Murder at the Museum",
+        "author": "Alasdair Beckett-King",
+        "coverPath": "/covers/2026-2027/3-5/murder-at-the-museum.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": 27,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "e3248260-da4c-4176-85ca-c8a92c5b5b03",
+      "type": "content",
+      "text": "Name 2 of the colors of train cars Carter sees on the moving train.",
+      "answer": "Red, blue, green, yellow, purple, redder, black, orange, redder still",
+      "page": 2,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "79de9e3a-f6e2-491a-b595-70862372db1b",
+        "bookKey": "magic-misfits",
+        "title": "The Magic Misfits",
+        "author": "Neil Patrick Harris",
+        "coverPath": "/covers/2026-2027/3-5/magic-misfits.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 253,
+        "chapterCount": 16,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "5c695630-618b-4b36-978e-2131f095f79c",
+      "type": "content",
+      "text": "What two things does Abuelita use to decorate her Christmas gifts instead of ribbon?",
+      "answer": "Grapevines and flowers",
+      "page": 173,
+      "pageLabel": "173-174",
+      "section": "body",
+      "book": {
+        "id": "8a47b26e-4fd1-40d9-acf3-8b85f90d8dfd",
+        "bookKey": "esperanza-rising",
+        "title": "Esperanza Rising",
+        "author": "Pam Mu\u00f1oz Ryan",
+        "coverPath": "/covers/2026-2027/3-5/esperanza-rising.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 14,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "16814f14-5034-49fb-946e-cc61304f1203",
+      "type": "content",
+      "text": "How many years had the Dolley Madison Destroyers been runners up in the Quiz Masters Championship?",
+      "answer": "6",
+      "page": 17,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "d887afa4-1e1b-4a02-b419-542508f5dc09",
+        "bookKey": "connect-the-stars",
+        "title": "Connect the Stars",
+        "author": "Marisa de los Santos and David Teague",
+        "coverPath": "/covers/2026-2027/3-5/connect-the-stars.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": 17,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "9585b0c1-d789-426e-96da-dbda17da94dd",
+      "type": "content",
+      "text": "What makes the dogs at Dogtown feel better when they're upset?",
+      "answer": "A Group Howl or good howl",
+      "page": 37,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "cc2b4f3f-5de1-4e10-a68b-d0cffb9f49e1",
+        "bookKey": "dogtown",
+        "title": "Dogtown",
+        "author": "Katherine Applegate and Gennifer Choldenko",
+        "coverPath": "/covers/2026-2027/3-5/dogtown.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 352,
+        "chapterCount": 131,
+        "genre": "Science Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "94dc0cd0-f5c2-4bf4-88c1-20eaa8578b2d",
+      "type": "content",
+      "text": "What does Grandma put in the basket for Plum to share with the other kids on the boat?",
+      "answer": "extra honey egg cakes",
+      "page": 15,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "9a8ae617-2f52-4d3a-8f1c-b4cfed58bf0e",
+        "bookKey": "guardian-test",
+        "title": "The Guardian Test",
+        "author": "Christina Soontornvat",
+        "coverPath": "/covers/2026-2027/3-5/guardian-test.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 160,
+        "chapterCount": 30,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "8437a3e6-8027-4600-8ca7-fdf2456bc624",
+      "type": "content",
+      "text": "What year was Nick born?",
+      "answer": "1987",
+      "page": 97,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "daa60ea0-5444-4d40-98d8-5f13ba093f23",
+        "bookKey": "frindle",
+        "title": "Frindle",
+        "author": "Andrew Clements",
+        "coverPath": "/covers/2026-2027/3-5/frindle.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 105,
+        "chapterCount": 15,
+        "genre": "Classic, Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "943ad218-6930-4c7f-bfc5-f217a3a4b9db",
+      "type": "content",
+      "text": "What happens on Reading Buddy days?",
+      "answer": "Kids volunteer to read to the dogs",
+      "page": 77,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "cc2b4f3f-5de1-4e10-a68b-d0cffb9f49e1",
+        "bookKey": "dogtown",
+        "title": "Dogtown",
+        "author": "Katherine Applegate and Gennifer Choldenko",
+        "coverPath": "/covers/2026-2027/3-5/dogtown.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 352,
+        "chapterCount": 131,
+        "genre": "Science Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "db835752-5bdc-457b-bb3d-279560ae34a8",
+      "type": "content",
+      "text": "What are the children hospitals visiting hours on Saturdays and Sundays?",
+      "answer": "1 to 5 PM",
+      "page": 69,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "4ff5c561-6ac2-431b-9047-2c7c401c72c5",
+        "bookKey": "light-and-air",
+        "title": "Light and Air",
+        "author": "Mindy Nichols Wendell",
+        "coverPath": "/covers/2026-2027/3-5/light-and-air.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 192,
+        "chapterCount": null,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "c71cbc80-b701-4133-9c84-76f9d81be2a2",
+      "type": "content",
+      "text": "According to Mrs. Granger, what is \"the finest tool for educating young minds\"?",
+      "answer": "The dictionary",
+      "page": 74,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "daa60ea0-5444-4d40-98d8-5f13ba093f23",
+        "bookKey": "frindle",
+        "title": "Frindle",
+        "author": "Andrew Clements",
+        "coverPath": "/covers/2026-2027/3-5/frindle.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 105,
+        "chapterCount": 15,
+        "genre": "Classic, Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "fd08ea01-33c4-4537-8a24-f6fcbec8e47a",
+      "type": "content",
+      "text": "What does Mr. Brunner\u2019s ballpoint pen turn into?",
+      "answer": "a bronze sword",
+      "page": 13,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5162102c-4172-419d-ad93-eade7f779b93",
+        "bookKey": "lightning-thief",
+        "title": "The Lightning Thief",
+        "author": "Rick Riordan",
+        "coverPath": "/covers/2026-2027/3-5/lightning-thief.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 377,
+        "chapterCount": 22,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "1893293d-830a-47f2-8d21-fc42615c0d5e",
+      "type": "content",
+      "text": "How many spells are in the witch\u2019s grimoire?",
+      "answer": "A hundred and a half",
+      "page": 52,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "29647fdd-a9d6-4914-bcc7-f750e5a3fae3",
+        "bookKey": "grace-of-wild-things",
+        "title": "The Grace of Wild Things",
+        "author": "Heather Fawcett",
+        "coverPath": "/covers/2026-2027/3-5/grace-of-wild-things.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "cedar-mill",
+        "name": "Cedar Mill Public Library",
+        "link": "https://library.cedarmill.org/kids/obob/"
+      }
+    },
+    {
+      "id": "1d952f5b-8c75-4cb2-b806-f148d68fd294",
+      "type": "content",
+      "text": "What city does Eddie live in?",
+      "answer": "Carterville",
+      "page": 11,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0277005f-b8d8-4859-a6f0-2b9b7bbc1582",
+        "bookKey": "its-the-end-of-the-world-and-im-in-my-bathing-suit",
+        "title": "It's the End of the World and I'm in My Bathing Suit",
+        "author": "Justin A. Reynolds",
+        "coverPath": "/covers/2026-2027/3-5/its-the-end-of-the-world-and-im-in-my-bathing-suit.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 35,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "80d298dd-5173-4eb8-a8a4-4317530b3445",
+      "type": "content",
+      "text": "What is the name of the witch's council?",
+      "answer": "Halifax Council of Magic",
+      "page": 24,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "29647fdd-a9d6-4914-bcc7-f750e5a3fae3",
+        "bookKey": "grace-of-wild-things",
+        "title": "The Grace of Wild Things",
+        "author": "Heather Fawcett",
+        "coverPath": "/covers/2026-2027/3-5/grace-of-wild-things.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "737535d1-3d8d-417a-aa1e-2b1ca19f6296",
+      "type": "content",
+      "text": "What is the brand of Eddie's stepdad's car?",
+      "answer": "Thunderbird",
+      "page": 186,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0277005f-b8d8-4859-a6f0-2b9b7bbc1582",
+        "bookKey": "its-the-end-of-the-world-and-im-in-my-bathing-suit",
+        "title": "It's the End of the World and I'm in My Bathing Suit",
+        "author": "Justin A. Reynolds",
+        "coverPath": "/covers/2026-2027/3-5/its-the-end-of-the-world-and-im-in-my-bathing-suit.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 35,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "6311778d-4676-44ee-8b34-c367b2a28da2",
+      "type": "content",
+      "text": "Which student at Pinnacle seemed embarrassed by all the questions other kids were asking Eli about his family?",
+      "answer": "Ambrose",
+      "page": 34,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "65ccdb46-db31-4c3c-927f-01d2f1d40a32",
+        "bookKey": "misadventures-of-the-family-fletcher",
+        "title": "The Misadventures of the Family Fletcher",
+        "author": "Dana Alison Levy",
+        "coverPath": "/covers/2026-2027/3-5/misadventures-of-the-family-fletcher.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": null,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "9d422826-654e-4369-9157-2bf219dc87d1",
+      "type": "content",
+      "text": "When does the Kettle stop working?",
+      "answer": "A week and a half ago",
+      "page": 86,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0f7a3e93-cc63-464a-bb83-9b34f023eccd",
+        "bookKey": "murder-at-the-museum",
+        "title": "Murder at the Museum",
+        "author": "Alasdair Beckett-King",
+        "coverPath": "/covers/2026-2027/3-5/murder-at-the-museum.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": 27,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "910ff190-8e48-417b-8bd5-546af239c462",
+      "type": "content",
+      "text": "What was Brother Chalad wearing when he met the new trainees on Lotus Island? (Be specific)",
+      "answer": "golden-brown robes",
+      "page": 30,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "9a8ae617-2f52-4d3a-8f1c-b4cfed58bf0e",
+        "bookKey": "guardian-test",
+        "title": "The Guardian Test",
+        "author": "Christina Soontornvat",
+        "coverPath": "/covers/2026-2027/3-5/guardian-test.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 160,
+        "chapterCount": 30,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "5995da40-654b-491d-810e-1dddf9f6bd1a",
+      "type": "content",
+      "text": "What animal greeted Carter the first time he walked into Vernon's Magic Shop?",
+      "answer": "parrot",
+      "page": 72,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "79de9e3a-f6e2-491a-b595-70862372db1b",
+        "bookKey": "magic-misfits",
+        "title": "The Magic Misfits",
+        "author": "Neil Patrick Harris",
+        "coverPath": "/covers/2026-2027/3-5/magic-misfits.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 253,
+        "chapterCount": 16,
+        "genre": "Mystery"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "a3110ea1-1a1d-4625-9def-6dc7b76bfe63",
+      "type": "content",
+      "text": "What dish does Dad and the boys forget to make on Thanksgiving?",
+      "answer": "the turkey",
+      "page": 110,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "65ccdb46-db31-4c3c-927f-01d2f1d40a32",
+        "bookKey": "misadventures-of-the-family-fletcher",
+        "title": "The Misadventures of the Family Fletcher",
+        "author": "Dana Alison Levy",
+        "coverPath": "/covers/2026-2027/3-5/misadventures-of-the-family-fletcher.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 288,
+        "chapterCount": null,
+        "genre": "Humor"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "088234f1-3bb4-4ca8-b030-cc6fc15054f6",
+      "type": "content",
+      "text": "What items does the Little Man steal from Rose?",
+      "answer": "Her necklace (with a ruby)",
+      "page": 189,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5c7a7186-d9be-4cbb-8526-141507b9bf63",
+        "bookKey": "snow-and-rose",
+        "title": "Snow and Rose",
+        "author": "Emily Winfield Martin",
+        "coverPath": "/covers/2026-2027/3-5/snow-and-rose.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 213,
+        "chapterCount": 19,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "86a852e8-dc95-494e-8bae-ab51dec1c6fd",
+      "type": "content",
+      "text": "Why are there no pictures of Macon at the debutante ball?",
+      "answer": "He was called into emergency surgery",
+      "page": 63,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0e3fcd65-3efd-487b-841c-f2d4c0e8c222",
+        "bookKey": "caterpillar-summer",
+        "title": "Caterpillar Summer",
+        "author": "Gillian McDunn",
+        "coverPath": "/covers/2026-2027/3-5/caterpillar-summer.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 320,
+        "chapterCount": 34,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "5f6673ad-b5d6-40c6-8929-5547d11448ed",
+      "type": "content",
+      "text": "Who are the three old ladies cutting yarn?",
+      "answer": "the fates",
+      "page": 46,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5162102c-4172-419d-ad93-eade7f779b93",
+        "bookKey": "lightning-thief",
+        "title": "The Lightning Thief",
+        "author": "Rick Riordan",
+        "coverPath": "/covers/2026-2027/3-5/lightning-thief.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 377,
+        "chapterCount": 22,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "428d4cc4-4e23-4ee8-94a3-70d4194a7b78",
+      "type": "content",
+      "text": "What is the name of the superintendent?",
+      "answer": "Doctor Fenton",
+      "page": 167,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "4ff5c561-6ac2-431b-9047-2c7c401c72c5",
+        "bookKey": "light-and-air",
+        "title": "Light and Air",
+        "author": "Mindy Nichols Wendell",
+        "coverPath": "/covers/2026-2027/3-5/light-and-air.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 192,
+        "chapterCount": null,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "b4720b3e-c26b-4813-8aa4-3babe8c1e287",
+      "type": "content",
+      "text": "What type of soul does Aster have?",
+      "answer": "the soul of a witch",
+      "page": 171,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "f66beada-e501-492a-a39a-12647f133f3f",
+        "bookKey": "witch-boy",
+        "title": "The Witch Boy",
+        "author": "Lee Knox Ostertag",
+        "coverPath": "/covers/2026-2027/3-5/witch-boy.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 224,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "705e1785-575a-4f3b-8462-c36d0311cd03",
+      "type": "content",
+      "text": "Where is Keedie sitting in the lecture hall when Addie goes into it?",
+      "answer": "near the front",
+      "page": 88,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "729ef1fc-b78d-4790-b8b9-7f45fe327220",
+        "bookKey": "kind-of-spark",
+        "title": "A Kind of Spark",
+        "author": "Elle McNicoll",
+        "coverPath": "/covers/2026-2027/3-5/kind-of-spark.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 193,
+        "chapterCount": 21,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "ef664e20-7ecc-46a2-beb4-89921b478c3f",
+      "type": "content",
+      "text": "What weapon was stolen by Mikasi?",
+      "answer": "sword",
+      "page": 83,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "f66beada-e501-492a-a39a-12647f133f3f",
+        "bookKey": "witch-boy",
+        "title": "The Witch Boy",
+        "author": "Lee Knox Ostertag",
+        "coverPath": "/covers/2026-2027/3-5/witch-boy.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 224,
+        "chapterCount": null,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "3cb359fa-6ac6-4e63-9867-2266a3acddea",
+      "type": "content",
+      "text": "Who is Aaron's 7th grade English teacher?",
+      "answer": "Mrs. Dunaway",
+      "page": 17,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "d887afa4-1e1b-4a02-b419-542508f5dc09",
+        "bookKey": "connect-the-stars",
+        "title": "Connect the Stars",
+        "author": "Marisa de los Santos and David Teague",
+        "coverPath": "/covers/2026-2027/3-5/connect-the-stars.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 368,
+        "chapterCount": 17,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "01de1425-00de-4a99-bb0d-0c174a926ee4",
+      "type": "content",
+      "text": "Who does Keedie think sounds utterly rotten?",
+      "answer": "Emily",
+      "page": 39,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "729ef1fc-b78d-4790-b8b9-7f45fe327220",
+        "bookKey": "kind-of-spark",
+        "title": "A Kind of Spark",
+        "author": "Elle McNicoll",
+        "coverPath": "/covers/2026-2027/3-5/kind-of-spark.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 193,
+        "chapterCount": 21,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "412dec37-65b1-48f7-95f0-4d581792b072",
+      "type": "content",
+      "text": "How many days did it take the snowstorm to break?",
+      "answer": "5",
+      "page": 146,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "5c7a7186-d9be-4cbb-8526-141507b9bf63",
+        "bookKey": "snow-and-rose",
+        "title": "Snow and Rose",
+        "author": "Emily Winfield Martin",
+        "coverPath": "/covers/2026-2027/3-5/snow-and-rose.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 213,
+        "chapterCount": 19,
+        "genre": "Fantasy"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "97e1fb06-fe7a-4afb-b0cf-9c847b128460",
+      "type": "content",
+      "text": "How many chickens did Carmen bring onto the train?",
+      "answer": "Six",
+      "page": 75,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "8a47b26e-4fd1-40d9-acf3-8b85f90d8dfd",
+        "bookKey": "esperanza-rising",
+        "title": "Esperanza Rising",
+        "author": "Pam Mu\u00f1oz Ryan",
+        "coverPath": "/covers/2026-2027/3-5/esperanza-rising.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 304,
+        "chapterCount": 14,
+        "genre": "Historical Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    },
+    {
+      "id": "69a42d27-f727-40a5-83fd-6d96c849de33",
+      "type": "content",
+      "text": "Who does Chicken fall asleep on during the long night of talking?",
+      "answer": "Macon",
+      "page": 268,
+      "pageLabel": null,
+      "section": "body",
+      "book": {
+        "id": "0e3fcd65-3efd-487b-841c-f2d4c0e8c222",
+        "bookKey": "caterpillar-summer",
+        "title": "Caterpillar Summer",
+        "author": "Gillian McDunn",
+        "coverPath": "/covers/2026-2027/3-5/caterpillar-summer.jpg",
+        "authorPronunciation": null,
+        "pronunciationSource": null,
+        "pageCount": 320,
+        "chapterCount": 34,
+        "genre": "Realistic Fiction"
+      },
+      "source": {
+        "slug": "obob-volunteers",
+        "name": "OBOB Volunteers",
+        "link": null
+      }
+    }
+  ],
+  "questionType": "both",
+  "personalized": false,
+  "spaced": {
+    "applied": false,
+    "review": 0
+  },
+  "message": null
+}

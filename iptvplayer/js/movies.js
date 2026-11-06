@@ -450,79 +450,23 @@ function showMovieDetails(movie) {
     document.getElementById('breadcrumb-movie-category').querySelector('a').textContent = currentCategory ? currentCategory.name : 'All Categories';
     document.getElementById('breadcrumb-movie-name').textContent = movie.title || movie.name || 'Unknown Movie';
     
-    // Reset video containers
-    document.getElementById('video-container').style.display = 'none';
+    // Reset trailer container
     document.getElementById('trailer-container').style.display = 'none';
     
     document.getElementById('movie-details').style.display = 'block';
 }
 
-// Play movie
-async function playMovie() {
-    if (window.currentMovieUrl) {
-        const videoContainer = document.getElementById('video-container');
-        const trailerContainer = document.getElementById('trailer-container');
-        const videoPlayer = document.getElementById('video-player');
-        const playBtn = document.getElementById('play-btn');
+// Play movie - redirect to VideoJS player page
+function playMovie() {
+    if (window.currentMovieUrl && currentMovie) {
+        const movieTitle = currentMovie.title || currentMovie.name || 'Unknown Movie';
+        showCacheStatus(`Opening ${movieTitle} in video player...`, 'info');
         
-        // Hide trailer if showing
-        trailerContainer.style.display = 'none';
-        
-        // Show video container
-        videoContainer.style.display = 'block';
-        
-        // Show loading status
-        showCacheStatus(`Loading movie...`, 'info');
-        
-        try {
-            // Use the new HLS-capable video player
-            await setupVideoPlayer(
-                videoPlayer, 
-                window.currentMovieUrl, 
-                currentMovie?.title || currentMovie?.name || 'movie'
-            );
-            
-            // Try to play automatically (except on iOS which requires user interaction)
-            if (!isIOS()) {
-                videoPlayer.play().then(() => {
-                    showCacheStatus(`Playing ${currentMovie?.title || currentMovie?.name || 'movie'}`, 'success');
-                }).catch(error => {
-                    console.log('Autoplay prevented by browser:', error);
-                    showCacheStatus(`Movie loaded - Click play to start`, 'info');
-                });
-            } else {
-                showCacheStatus(`Movie loaded - Click play to start (iOS)`, 'info');
-            }
-            
-            // Update play button
-            playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
-            playBtn.onclick = stopMovie;
-            
-            // Scroll to video
-            videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-        } catch (error) {
-            console.error('Error setting up video player:', error);
-            showCacheStatus(`Error loading movie: ${error.message}`, 'danger');
-        }
+        // Open in VideoJS player page
+        openVideoPlayer(window.currentMovieUrl, movieTitle, 'movie');
+    } else {
+        showCacheStatus('No movie URL available', 'danger');
     }
-}
-
-// Stop movie
-function stopMovie() {
-    const videoContainer = document.getElementById('video-container');
-    const videoPlayer = document.getElementById('video-player');
-    const playBtn = document.getElementById('play-btn');
-    
-    // Hide video container and stop playback
-    videoContainer.style.display = 'none';
-    destroyVideoPlayer(videoPlayer);
-    
-    // Reset play button
-    playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Play';
-    playBtn.onclick = playMovie;
-    
-    showCacheStatus('Playback stopped', 'info');
 }
 
 // Pagination control functions
@@ -622,13 +566,10 @@ function toggleTrailer() {
     if (window.currentTrailer) {
         const trailerContainer = document.getElementById('trailer-container');
         const youtubeTrailer = document.getElementById('youtube-trailer');
-        const videoContainer = document.getElementById('video-container');
         const trailerBtn = document.getElementById('trailer-btn');
         
         if (trailerContainer.style.display === 'none' || trailerContainer.style.display === '') {
             // Show trailer
-            videoContainer.style.display = 'none'; // Hide main video
-            document.getElementById('video-player').pause(); // Pause main video
             
             youtubeTrailer.src = `https://www.youtube.com/embed/${window.currentTrailer}?autoplay=1`;
             trailerContainer.style.display = 'block';

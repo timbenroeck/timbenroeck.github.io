@@ -512,6 +512,15 @@ async function fetchAPI(action, params = {}, useCache = true) {
 function generateStreamUrl(stream, type) {
     if (!auth) return '';
     
+    console.log('🔍 generateStreamUrl called with:', { stream, type });
+    console.log('🔍 Stream object keys:', Object.keys(stream));
+    console.log('🔍 Stream ID properties:', { 
+        stream_id: stream.stream_id, 
+        id: stream.id, 
+        num: stream.num,
+        stream_display_name: stream.stream_display_name 
+    });
+    
     switch(type) {
         case 'live':
             return `${auth.base_url}/live/${auth.username}/${auth.password}/${stream.stream_id}.m3u8`;
@@ -665,6 +674,43 @@ function goHome() {
         window.location.href = `index.html?auth=${authParam}`;
     } else {
         window.location.href = 'login.html';
+    }
+}
+
+// Video player helper functions
+function openVideoPlayer(streamUrl, title, type = 'video') {
+    // Get current auth parameter to pass along
+    const urlParams = new URLSearchParams(window.location.search);
+    const authParam = urlParams.get('auth');
+    
+    console.log('Opening video player with URL:', streamUrl);
+    console.log('Title:', title);
+    console.log('Type:', type);
+    
+    // Build player URL with base64 encoded parameters (more robust than encodeURIComponent)
+    const playerUrl = new URL('player.html', window.location.origin + window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1));
+    
+    // Use base64 encoding for the stream URL to handle complex URLs with query parameters
+    playerUrl.searchParams.set('url', btoa(streamUrl));
+    playerUrl.searchParams.set('title', btoa(encodeURIComponent(title))); // Double encode title to handle special characters
+    playerUrl.searchParams.set('type', type);
+    
+    if (authParam) {
+        playerUrl.searchParams.set('auth', authParam);
+    }
+    
+    console.log('Built player URL:', playerUrl.toString());
+    
+    // Open player in new window/tab
+    const playerWindow = window.open(playerUrl.toString(), '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    
+    if (!playerWindow) {
+        // Fallback if popup blocked - show message and try same window
+        alert('Popup blocked! Please allow popups for this site or the video will open in the same window.');
+        window.location.href = playerUrl.toString();
+    } else {
+        // Focus the new window
+        playerWindow.focus();
     }
 }
 

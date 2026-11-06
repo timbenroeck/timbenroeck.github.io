@@ -505,8 +505,7 @@ function showSeriesDetails(seriesApiResponse, originalSeries) {
     document.getElementById('breadcrumb-series-category').querySelector('a').textContent = currentCategory ? currentCategory.name : 'All Categories';
     document.getElementById('breadcrumb-series-name').textContent = info.name || originalSeries.name || 'Unknown Series';
     
-    // Hide video/trailer containers initially
-    document.getElementById('video-container').style.display = 'none';
+    // Hide trailer container initially
     document.getElementById('trailer-container').style.display = 'none';
     
     document.getElementById('series-details').style.display = 'block';
@@ -670,8 +669,8 @@ function displayEpisodes(episodes, seasonInfo) {
     episodesContainer.appendChild(episodesGrid);
 }
 
-// Play a specific episode
-async function playEpisode(episodeId, episodeNum, episodeTitle) {
+// Play a specific episode - redirect to VideoJS player page
+function playEpisode(episodeId, episodeNum, episodeTitle) {
     const episode = currentEpisodes.find(e => e.id === episodeId);
     if (!episode) {
         showCacheStatus('Episode not found', 'danger');
@@ -679,68 +678,12 @@ async function playEpisode(episodeId, episodeNum, episodeTitle) {
     }
     
     const episodeUrl = generateStreamUrl({ id: episodeId, container_extension: episode.container_extension }, 'episode');
+    const fullTitle = `${currentSeries?.title || currentSeries?.name || 'Series'} - Episode ${episodeNum}: ${episodeTitle}`;
     
-    // Show video container
-    const videoContainer = document.getElementById('video-container');
-    const videoPlayer = document.getElementById('video-player');
-    const nowPlayingTitle = document.getElementById('now-playing-title');
-    const trailerContainer = document.getElementById('trailer-container');
+    showCacheStatus(`Opening Episode ${episodeNum} in video player...`, 'info');
     
-    // Hide trailer if showing
-    trailerContainer.style.display = 'none';
-    
-    // Update title
-    nowPlayingTitle.textContent = `Episode ${episodeNum}: ${episodeTitle}`;
-    
-    // Show video container
-    videoContainer.style.display = 'block';
-    
-    // Show loading status
-    showCacheStatus(`Loading Episode ${episodeNum} - ${episodeTitle}...`, 'info');
-    
-    try {
-        // Use the new HLS-capable video player
-        await setupVideoPlayer(
-            videoPlayer, 
-            episodeUrl, 
-            `Episode ${episodeNum} - ${episodeTitle}`
-        );
-        
-        // Try to play automatically (except on iOS which requires user interaction)
-        if (!isIOS()) {
-            videoPlayer.play().then(() => {
-                showCacheStatus(`Playing Episode ${episodeNum} - ${episodeTitle}`, 'success');
-            }).catch(error => {
-                console.log('Autoplay prevented by browser:', error);
-                showCacheStatus(`Episode ${episodeNum} loaded - Click play to start`, 'info');
-            });
-        } else {
-            showCacheStatus(`Episode ${episodeNum} loaded - Click play to start (iOS)`, 'info');
-        }
-        
-        
-        // Scroll to video player
-        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        
-    } catch (error) {
-        console.error('Error setting up video player:', error);
-        showCacheStatus(`Error loading Episode ${episodeNum}: ${error.message}`, 'danger');
-    }
-}
-
-// Stop episode playback
-function stopEpisodePlayback() {
-    const videoContainer = document.getElementById('video-container');
-    const videoPlayer = document.getElementById('video-player');
-    
-    // Destroy video player (handles both HLS and regular video)
-    destroyVideoPlayer(videoPlayer);
-    
-    // Hide video container
-    videoContainer.style.display = 'none';
-    
-    
-    showCacheStatus('Playback stopped', 'info');
+    // Open in VideoJS player page
+    openVideoPlayer(episodeUrl, fullTitle, 'episode');
 }
 
 // Copy episode URL to clipboard

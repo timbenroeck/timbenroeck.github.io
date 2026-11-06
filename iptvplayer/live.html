@@ -279,20 +279,11 @@
                 </div>
             </div>
 
-            <!-- Video Player -->
-            <div id="video-container" class="mb-4" style="display: none;">
-                <div class="ratio ratio-16x9">
-                    <video id="video-player" controls playsinline webkit-playsinline style="background: #000;" preload="metadata" crossorigin="anonymous">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
 
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="js/common.js"></script>
     <script>
         // Global variables
@@ -525,68 +516,20 @@
             document.getElementById('breadcrumb-channel-category').querySelector('a').textContent = currentCategory ? currentCategory.name : 'All Categories';
             document.getElementById('breadcrumb-channel-name').textContent = channel.name || 'Unknown Channel';
             
-            document.getElementById('video-container').style.display = 'none';
             document.getElementById('channel-details').style.display = 'block';
         }
 
-        // Play channel
-        async function playChannel() {
-            if (window.currentChannelUrl) {
-                const videoContainer = document.getElementById('video-container');
-                const videoPlayer = document.getElementById('video-player');
-                const playBtn = document.getElementById('play-btn');
+        // Play channel - redirect to VideoJS player page
+        function playChannel() {
+            if (window.currentChannelUrl && currentChannel) {
+                const channelTitle = `${currentChannel.name || 'Unknown Channel'} (Live TV)`;
+                showCacheStatus(`Opening ${currentChannel.name || 'channel'} in video player...`, 'info');
                 
-                // Show video container
-                videoContainer.style.display = 'block';
-                
-                // Show loading status
-                showCacheStatus(`Loading ${currentChannel?.name || 'channel'}...`, 'info');
-                
-                try {
-                    // Use the new HLS-capable video player
-                    await setupVideoPlayer(
-                        videoPlayer, 
-                        window.currentChannelUrl, 
-                        currentChannel?.name || 'Live Channel'
-                    );
-                    
-                    // Try to play automatically (except on iOS which requires user interaction)
-                    if (!isIOS()) {
-                        videoPlayer.play().then(() => {
-                            showCacheStatus(`Playing ${currentChannel?.name || 'channel'}`, 'success');
-                        }).catch(error => {
-                            console.log('Autoplay prevented by browser:', error);
-                            showCacheStatus(`Channel loaded - Click play to start`, 'info');
-                        });
-                    } else {
-                        showCacheStatus(`Channel loaded - Click play to start (iOS)`, 'info');
-                    }
-                    
-                    playBtn.innerHTML = '<i class="fas fa-stop me-2"></i>Stop';
-                    playBtn.onclick = stopChannel;
-                    
-                    videoContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    
-                } catch (error) {
-                    console.error('Error setting up video player:', error);
-                    showCacheStatus(`Error loading channel: ${error.message}`, 'danger');
-                }
+                // Open in VideoJS player page
+                openVideoPlayer(window.currentChannelUrl, channelTitle, 'live');
+            } else {
+                showCacheStatus('No channel URL available', 'danger');
             }
-        }
-
-        // Stop channel
-        function stopChannel() {
-            const videoContainer = document.getElementById('video-container');
-            const videoPlayer = document.getElementById('video-player');
-            const playBtn = document.getElementById('play-btn');
-            
-            videoContainer.style.display = 'none';
-            destroyVideoPlayer(videoPlayer);
-            
-            playBtn.innerHTML = '<i class="fas fa-play me-2"></i>Watch Live';
-            playBtn.onclick = playChannel;
-            
-            showCacheStatus('Channel stopped', 'info');
         }
 
         // Copy functions

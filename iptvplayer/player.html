@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPTV Player - Video Player</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- VideoJS CSS -->
+    <link href="https://vjs.zencdn.net/8.23.4/video-js.css" rel="stylesheet" />
+    
+    <style>
+        body {
+            background: #000;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .player-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #000;
+        }
+        
+        .player-header {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            position: relative;
+            z-index: 1000;
+        }
+        
+        .player-title {
+            flex-grow: 1;
+            font-size: 1rem;
+            font-weight: 500;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .player-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .video-container {
+            flex-grow: 1;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-js {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .error-container {
+            color: white;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .btn-player {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-player:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .player-header {
+                padding: 0.25rem 0.5rem;
+            }
+            
+            .player-title {
+                font-size: 0.875rem;
+            }
+            
+            .btn-player {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 999;
+        }
+        
+        .spinner-border-lg {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="player-container">
+        <!-- Header with controls -->
+        <div class="player-header">
+            <h1 class="player-title" id="video-title">Loading...</h1>
+                <div class="player-controls">
+                    <button id="manual-play-btn" class="btn btn-player btn-sm" onclick="manualPlay()" title="Manual Play" style="display: none;">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn btn-player btn-sm" onclick="copyCurrentUrl()" title="Copy URL">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="btn btn-player btn-sm" onclick="goBack()" title="Go Back">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="btn btn-player btn-sm" onclick="toggleFullscreen()" title="Fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+        </div>
+        
+        <!-- Video Container -->
+        <div class="video-container">
+            <div class="loading-spinner">
+                <div class="spinner-border spinner-border-lg text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            
+            <!-- VideoJS Player -->
+            <video-js
+                id="video-player"
+                class="video-js vjs-default-skin"
+                controls
+                preload="auto"
+                data-setup='{}'>
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a 
+                    <a href="https://videojs.com/html5-video-support/" target="_blank">web browser that supports HTML5 video</a>.
+                </p>
+            </video-js>
+            
+            <!-- Error Container -->
+            <div id="error-container" class="error-container" style="display: none;">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h4>Video Playback Error</h4>
+                <p id="error-message">Unable to load video. Please try again.</p>
+                <button class="btn btn-outline-light" onclick="retryVideo()">
+                    <i class="fas fa-refresh me-2"></i>Retry
+                </button>
+                <button class="btn btn-outline-secondary ms-2" onclick="goBack()">
+                    <i class="fas fa-arrow-left me-2"></i>Go Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VideoJS JavaScript -->
+    <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
+
+    
+    <!-- VideoJS HLS Plugin -->
+    <script src="https://unpkg.com/@videojs/http-streaming@3.17.2/dist/videojs-http-streaming.min.js"></script>
+    
+    <script>
+        // Global variables
+        let player = null;
+        let currentStreamUrl = '';
+        let currentTitle = '';
+        let currentType = '';
+        
+        // Initialize player on page load
+        window.onload = function() {
+            initializePlayer();
+        };
+        
+        function initializePlayer() {
+            try {
+                // Parse URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                // Decode base64 encoded parameters
+                const encodedUrl = urlParams.get('url') || '';
+                const encodedTitle = urlParams.get('title') || '';
+                currentType = urlParams.get('type') || 'video';
+                
+                console.log('Raw URL parameters:', { encodedUrl, encodedTitle, currentType });
+                
+                // Decode base64 URL
+                try {
+                    currentStreamUrl = encodedUrl ? atob(encodedUrl) : '';
+                } catch (e) {
+                    console.error('Error decoding base64 URL:', e);
+                    currentStreamUrl = '';
+                }
+                
+                // Decode base64 title (double encoded: base64 -> URI decode)
+                try {
+                    const decodedTitle = encodedTitle ? atob(encodedTitle) : 'Video Player';
+                    currentTitle = decodeURIComponent(decodedTitle);
+                } catch (e) {
+                    console.error('Error decoding base64 title:', e);
+                    currentTitle = 'Video Player';
+                }
+                
+                console.log('Player initialized with:', { 
+                    currentStreamUrl, 
+                    currentTitle, 
+                    currentType,
+                    urlLength: currentStreamUrl.length
+                });
+                
+                // Make the current URL easily copyable from console
+                console.log('📋 Stream URL (copyable):', currentStreamUrl);
+                
+                // Test URL accessibility
+                console.log('🧪 Testing stream URL accessibility...');
+                fetch(currentStreamUrl, { method: 'HEAD' })
+                    .then(response => {
+                        console.log('🌐 URL accessibility test:', {
+                            status: response.status,
+                            statusText: response.statusText,
+                            headers: Object.fromEntries(response.headers.entries())
+                        });
+                    })
+                    .catch(error => {
+                        console.error('❌ URL accessibility test failed:', error);
+                    });
+                
+                if (!currentStreamUrl) {
+                    showError('No video URL provided');
+                    return;
+                }
+                
+                // Update title
+                document.getElementById('video-title').textContent = currentTitle;
+                document.title = `IPTV Player - ${currentTitle}`;
+                
+                // Initialize VideoJS
+                initVideoJS();
+                
+            } catch (error) {
+                console.error('Error initializing player:', error);
+                showError('Error initializing video player: ' + error.message);
+            }
+        }
+        
+        function initVideoJS() {
+            // Hide loading spinner after a short delay
+            setTimeout(() => {
+                const spinner = document.querySelector('.loading-spinner');
+                if (spinner) {
+                    spinner.style.display = 'none';
+                }
+            }, 2000);
+            
+            // Determine video type and source configuration
+            const isHLS = currentStreamUrl.toLowerCase().includes('.m3u8') || 
+                         currentStreamUrl.toLowerCase().includes('/hls/') || 
+                         currentStreamUrl.toLowerCase().includes('playlist');
+            
+            // Detect file extension for better type detection
+            const url = currentStreamUrl.toLowerCase();
+            let mimeType = 'video/mp4'; // default
+            
+            if (isHLS) {
+                mimeType = 'application/x-mpegURL';
+            } else if (url.includes('.mkv')) {
+                mimeType = 'video/x-matroska';
+            } else if (url.includes('.avi')) {
+                mimeType = 'video/x-msvideo';
+            } else if (url.includes('.mov')) {
+                mimeType = 'video/quicktime';
+            } else if (url.includes('.webm')) {
+                mimeType = 'video/webm';
+            }
+            
+            console.log('Stream URL analysis:', {
+                url: currentStreamUrl,
+                isHLS: isHLS,
+                detectedType: mimeType,
+                userAgent: navigator.userAgent,
+                isSafari: videojs?.browser?.IS_SAFARI
+            });
+            
+            // VideoJS configuration optimized for mobile and HLS
+            const videoJSConfig = {
+                controls: true,
+                responsive: true,
+                fluid: true,
+                playsinline: true,
+                preload: 'auto',
+                techOrder: ['html5'],
+                html5: {
+                    vhs: {
+                        enableLowInitialPlaylist: true,
+                        smoothQualityChange: true,
+                        overrideNative: !videojs.browser.IS_SAFARI // Use native HLS on Safari/iOS
+                    }
+                },
+                sources: [{
+                    src: currentStreamUrl,
+                    type: mimeType
+                }]
+            };
+            
+            console.log('VideoJS configuration:', videoJSConfig);
+            
+            // Initialize VideoJS player
+            player = videojs('video-player', videoJSConfig);
+            
+            // Event handlers with detailed logging
+            player.ready(function() {
+                console.log('✅ VideoJS player is ready');
+                console.log('Player tech:', player.tech().name_);
+                console.log('Current source:', player.currentSource());
+                
+                // Mobile-specific optimizations
+                if (isMobile()) {
+                    player.addClass('vjs-mobile');
+                    console.log('📱 Applied mobile optimizations');
+                }
+                
+                // Auto-play (if allowed by browser) with timeout
+                if (!isMobile() || currentType === 'live') {
+                    console.log('🔄 Attempting autoplay...');
+                    
+                    // Set a timeout for autoplay attempt
+                    const autoplayTimeout = setTimeout(function() {
+                        console.log('⏰ Autoplay timeout - showing manual play button');
+                        document.getElementById('manual-play-btn').style.display = 'inline-block';
+                    }, 5000);
+                    
+                    player.play().then(function() {
+                        console.log('▶️ Autoplay successful');
+                        clearTimeout(autoplayTimeout);
+                    }).catch(function(error) {
+                        console.log('⏸️ Autoplay failed:', error);
+                        clearTimeout(autoplayTimeout);
+                        document.getElementById('manual-play-btn').style.display = 'inline-block';
+                    });
+                } else {
+                    console.log('📱 Autoplay skipped on mobile - user interaction required');
+                    document.getElementById('manual-play-btn').style.display = 'inline-block';
+                }
+            });
+            
+            player.on('loadstart', function() {
+                console.log('🔄 Video loading started');
+            });
+            
+            player.on('loadedmetadata', function() {
+                console.log('📊 Video metadata loaded');
+                console.log('Duration:', player.duration());
+                console.log('Dimensions:', player.videoWidth() + 'x' + player.videoHeight());
+            });
+            
+            player.on('canplay', function() {
+                console.log('✅ Video can start playing');
+            });
+            
+            player.on('playing', function() {
+                console.log('▶️ Video is now playing');
+            });
+            
+            player.on('pause', function() {
+                console.log('⏸️ Video paused');
+            });
+            
+            player.on('waiting', function() {
+                console.log('⏳ Video waiting/buffering');
+            });
+            
+            player.on('error', function() {
+                const error = player.error();
+                console.error('❌ VideoJS error:', error);
+                console.error('Error details:', {
+                    code: error?.code,
+                    message: error?.message,
+                    type: error?.type
+                });
+                
+                let errorMessage = 'Unable to play video';
+                if (error) {
+                    switch (error.code) {
+                        case 1: errorMessage = 'Video loading was aborted'; break;
+                        case 2: errorMessage = 'Network error occurred - check your connection'; break;
+                        case 3: errorMessage = 'Video format not supported by this browser'; break;
+                        case 4: errorMessage = 'Video source not found or inaccessible'; break;
+                        default: errorMessage = `Video error (code: ${error.code})`;
+                    }
+                    
+                    if (error.message) {
+                        errorMessage += ` - ${error.message}`;
+                    }
+                }
+                
+                showError(errorMessage);
+            });
+        }
+        
+        function showError(message) {
+            console.error('Showing error:', message);
+            document.querySelector('.loading-spinner').style.display = 'none';
+            document.getElementById('video-player').style.display = 'none';
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-container').style.display = 'block';
+        }
+        
+        function retryVideo() {
+            document.getElementById('error-container').style.display = 'none';
+            document.getElementById('video-player').style.display = 'block';
+            document.querySelector('.loading-spinner').style.display = 'block';
+            
+            if (player) {
+                player.dispose();
+            }
+            
+            // Recreate video element
+            const videoContainer = document.querySelector('.video-container');
+            const newVideoElement = document.createElement('video-js');
+            newVideoElement.id = 'video-player';
+            newVideoElement.className = 'video-js vjs-default-skin';
+            newVideoElement.setAttribute('controls', '');
+            newVideoElement.setAttribute('preload', 'auto');
+            newVideoElement.setAttribute('data-setup', '{}');
+            
+            // Remove old video element
+            const oldVideo = document.getElementById('video-player');
+            if (oldVideo) {
+                oldVideo.remove();
+            }
+            
+            // Add new video element
+            videoContainer.appendChild(newVideoElement);
+            
+            // Reinitialize
+            setTimeout(() => {
+                initVideoJS();
+            }, 500);
+        }
+        
+        function copyCurrentUrl() {
+            if (currentStreamUrl) {
+                navigator.clipboard.writeText(currentStreamUrl).then(() => {
+                    // Show feedback
+                    const button = event.target.closest('button');
+                    const originalContent = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        button.innerHTML = originalContent;
+                    }, 2000);
+                }).catch(() => {
+                    console.log('Clipboard copy failed');
+                });
+            }
+        }
+        
+        // Debug function - can be called from console
+        window.testVideoUrl = function() {
+            console.log('🧪 Testing video URL directly...');
+            console.log('URL:', currentStreamUrl);
+            
+            // Try to fetch with different methods
+            console.log('Method 1: HEAD request...');
+            fetch(currentStreamUrl, { method: 'HEAD' })
+                .then(response => {
+                    console.log('✅ HEAD request successful:', response.status, response.statusText);
+                    console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                })
+                .catch(error => {
+                    console.error('❌ HEAD request failed:', error);
+                    
+                    // Try GET request
+                    console.log('Method 2: GET request...');
+                    fetch(currentStreamUrl)
+                        .then(response => {
+                            console.log('✅ GET request successful:', response.status, response.statusText);
+                            console.log('Content-Type:', response.headers.get('content-type'));
+                            console.log('Content-Length:', response.headers.get('content-length'));
+                        })
+                        .catch(error => {
+                            console.error('❌ GET request also failed:', error);
+                        });
+                });
+                
+            // Also try creating a direct video element
+            console.log('Method 3: Direct video element test...');
+            const testVideo = document.createElement('video');
+            testVideo.src = currentStreamUrl;
+            testVideo.addEventListener('loadstart', () => console.log('🔄 Direct video: loadstart'));
+            testVideo.addEventListener('loadedmetadata', () => console.log('📊 Direct video: loadedmetadata'));
+            testVideo.addEventListener('canplay', () => console.log('✅ Direct video: canplay'));
+            testVideo.addEventListener('error', (e) => console.error('❌ Direct video error:', e));
+        };
+        
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Fallback to index page
+                const urlParams = new URLSearchParams(window.location.search);
+                const auth = urlParams.get('auth');
+                if (auth) {
+                    window.location.href = `index.html?auth=${auth}`;
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+        }
+        
+        function toggleFullscreen() {
+            if (player) {
+                if (player.isFullscreen()) {
+                    player.exitFullscreen();
+                } else {
+                    player.requestFullscreen();
+                }
+            }
+        }
+        
+        function manualPlay() {
+            console.log('👆 Manual play button clicked');
+            if (player) {
+                console.log('🔄 Attempting manual play...');
+                player.play().then(function() {
+                    console.log('▶️ Manual play successful');
+                    document.getElementById('manual-play-btn').style.display = 'none';
+                }).catch(function(error) {
+                    console.error('❌ Manual play failed:', error);
+                    showError('Manual play failed: ' + error.message);
+                });
+            } else {
+                console.error('❌ Player not initialized');
+                showError('Player not initialized');
+            }
+        }
+        
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (player) {
+                player.dispose();
+            }
+        });
+        
+        // Handle keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (!player) return;
+            
+            switch (event.key) {
+                case ' ': // Spacebar
+                    event.preventDefault();
+                    if (player.paused()) {
+                        player.play();
+                    } else {
+                        player.pause();
+                    }
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'Escape':
+                    if (player.isFullscreen()) {
+                        player.exitFullscreen();
+                    }
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

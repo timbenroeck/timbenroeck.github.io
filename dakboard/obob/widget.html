@@ -1,0 +1,283 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBOB Dashboard</title>
+<style>
+  ::-webkit-scrollbar { width: 0; background: transparent; }
+  
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+    background-color: transparent; 
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .glass-container {
+    background: rgba(0, 0, 0, 0.2);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 15px;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .label { font-weight: 700; color: #ffd700; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+  .stats { font-size: 10px; color: rgba(255,255,255,0.5); }
+
+  .nav-group { display: flex; gap: 8px; align-items: center; }
+
+  .btn {
+    color: #fff;
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-back { border-color: #ffd700; color: #ffd700; }
+  .btn-reset { border-color: #ffd700; color: #ffd700; }
+  .btn-filter-active { background: #4da6ff; color: #000; border-color: #fff; }
+
+  #main-content { flex-grow: 1; position: relative; cursor: pointer; }
+
+  .card-face {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .question-text { font-size: 28px; font-weight: 300; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+  .answer-text { font-size: 30px; color: #4da6ff; font-weight: 400; margin-bottom: 8px; }
+  .page-ref { color: #ffd700; font-weight: 700; font-size: 14px; margin-left: 10px; }
+  
+  .click-hint { font-size: 9px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2px; margin-top: 15px; }
+
+  .hidden { display: none !important; }
+
+  /* Settings View */
+  .settings-view {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 15, 15, 0.98);
+    z-index: 20;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .settings-flex { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .settings-view h4 { width: 100%; margin: 15px 0 8px 0; color: #ffd700; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .setting-item { display: flex; align-items: center; gap: 8px; font-size: 12px; background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 20px; }
+
+  .footer-btns { display: flex; gap: 15px; padding-bottom: 30px; }
+  .save-btn { background: #2E5A1C; border-color: #ffd700; flex: 1; font-size: 12px; padding: 10px; }
+
+  .fade-in { animation: fadeIn 0.3s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<div class="glass-container">
+  <div class="header">
+    <div class="header-info">
+      <span class="label">OBOB Challenge</span>
+      <span id="stats" class="stats">Loading...</span>
+    </div>
+    <div class="nav-group">
+      <div id="btn-back" class="btn btn-back hidden" onclick="flipBack()">← Back to Q</div>
+      
+      <div id="btn-clear" class="btn btn-reset hidden" onclick="resetToAll()" title="Clear filter">✕ Clear</div>
+      <div id="btn-filter" class="btn" onclick="toggleSettings()">Filter</div>
+    </div>
+  </div>
+
+  <div id="main-content">
+    <div id="question-face" class="card-face fade-in" onclick="flipToAnswer()">
+        <div id="q-content" class="question-text">Loading Questions...</div>
+        <div class="click-hint">Click to see answer ↻</div>
+    </div>
+
+    <div id="answer-face" class="card-face fade-in hidden" onclick="showNextQuestion()">
+        <span class="label" style="font-size: 9px; margin-bottom: 5px;">Answer</span>
+        <div id="a-content" class="answer-text"></div>
+        <div id="a-meta" style="font-style: italic; color: #bbb; font-size: 18px;"></div>
+        <div class="click-hint">Click anywhere for Next Question →</div>
+    </div>
+
+    <div id="settings-view" class="settings-view hidden">
+        <div style="font-size: 11px; color: #aaa; margin-bottom: 10px;">Select books, then click "Apply" below:</div>
+        <div class="footer-btns" style="padding-bottom: 0;">
+            <div class="btn" onclick="setAllChecks(true)">Select All</div>
+            <div class="btn" onclick="setAllChecks(false)">Select None</div>
+        </div>
+        <div class="settings-flex" id="filter-grid"></div>
+        <div class="footer-btns">
+            <div class="btn save-btn" onclick="saveFilter()">Apply</div>
+            <div class="btn btn-reset" style="padding: 10px;" onclick="resetToAll()">Reset (All Books)</div>
+            <div class="btn" style="background:#444; padding: 10px;" onclick="toggleSettings()">Cancel</div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const JSON_URL = 'https://raw.githubusercontent.com/timbenroeck/timbenroeck.github.io/refs/heads/site/dakboard/obob/bob2027_all.json';
+let allQuestions = [], filteredDeck = [], currentIndex = 0;
+let selectedTypes = ['in-which-book', 'content'], selectedBooks = [];
+const FILTER_KEY = 'obob_filter';
+const allBookKeys = () => [...new Set(allQuestions.map(q => q.book_key))];
+
+async function init() {
+    try {
+        const response = await fetch(`${JSON_URL}?t=${new Date().getTime()}`);
+        const data = await response.json();
+        // Support both the 2025 format (q.book_key) and the 2027 format (q.book.bookKey)
+        allQuestions = data.questions
+            .map(q => ({ ...q, book_key: q.book_key || q.book?.bookKey || q.book?.book_key }))
+            .filter(q => q.book_key);
+        const saved = localStorage.getItem(FILTER_KEY);
+        if (saved) {
+            ({ types: selectedTypes, books: selectedBooks } = JSON.parse(saved));
+            // Drop saved books that no longer exist in this data set
+            selectedBooks = selectedBooks.filter(bk => allBookKeys().includes(bk));
+            if (selectedBooks.length === 0) selectedBooks = allBookKeys();
+            applyFilters();
+        } else {
+            resetToAll();
+        }
+    } catch (e) { document.getElementById('q-content').innerText = "Load error."; }
+}
+
+function resetToAll() {
+    selectedBooks = allBookKeys();
+    selectedTypes = ['in-which-book', 'content'];
+    localStorage.removeItem(FILTER_KEY);
+    document.getElementById('settings-view').classList.add('hidden');
+    applyFilters();
+}
+
+function applyFilters() {
+    filteredDeck = allQuestions.filter(q => selectedTypes.includes(q.type) && selectedBooks.includes(q.book_key));
+    // Fisher-Yates Shuffle
+    for (let i = filteredDeck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [filteredDeck[i], filteredDeck[j]] = [filteredDeck[j], filteredDeck[i]];
+    }
+    currentIndex = 0;
+    updateHeader();
+    showNextQuestion();
+}
+
+function updateHeader() {
+    document.getElementById('stats').innerText = `${selectedBooks.length} Books | ${filteredDeck.length} Qs`;
+    const isFiltered = selectedTypes.length < 2 || allBookKeys().some(bk => !selectedBooks.includes(bk));
+    document.getElementById('btn-clear').classList.toggle('hidden', !isFiltered);
+    document.getElementById('btn-filter').classList.toggle('btn-filter-active', isFiltered);
+}
+
+function setAllChecks(checked) {
+    document.querySelectorAll('.book-chk').forEach(el => el.checked = checked);
+}
+
+function flipToAnswer() {
+    document.getElementById('question-face').classList.add('hidden');
+    document.getElementById('answer-face').classList.remove('hidden');
+    document.getElementById('btn-back').classList.remove('hidden');
+}
+
+function flipBack() {
+    document.getElementById('answer-face').classList.add('hidden');
+    document.getElementById('question-face').classList.remove('hidden');
+    document.getElementById('btn-back').classList.add('hidden');
+}
+
+function showNextQuestion() {
+    if (filteredDeck.length === 0) {
+        document.getElementById('q-content').innerText = "No questions match this filter.";
+        return;
+    }
+    if (currentIndex >= filteredDeck.length) currentIndex = 0;
+    const item = filteredDeck[currentIndex];
+    
+    let qText = item.text, aText = "", meta = `Book: ${item.book.title}`;
+    const pageRef = item.page ? `<span class="page-ref">pg. ${item.page}</span>` : "";
+
+    if (item.type === 'in-which-book') {
+        qText = (qText.toLowerCase().startsWith("in which book") ? "" : "In which book ") + qText;
+        aText = `${item.book.title} by ${item.book.author}${pageRef}`;
+        meta = "";
+    } else {
+        qText = `In <i>${item.book.title}</i> by ${item.book.author}, ${qText}`;
+        aText = `${item.answer}${pageRef}`;
+    }
+
+    document.getElementById('q-content').innerHTML = qText;
+    document.getElementById('a-content').innerHTML = aText;
+    document.getElementById('a-meta').innerHTML = meta;
+    
+    // Always return to question face for a new card
+    document.getElementById('answer-face').classList.add('hidden');
+    document.getElementById('question-face').classList.remove('hidden');
+    document.getElementById('btn-back').classList.add('hidden');
+    
+    currentIndex++;
+}
+
+function toggleSettings() {
+    const view = document.getElementById('settings-view');
+    view.classList.toggle('hidden');
+    if (!view.classList.contains('hidden')) {
+        const bookKeys = [...new Set(allQuestions.map(q => q.book_key))].sort();
+        document.getElementById('filter-grid').innerHTML = `
+            <h4>Categories</h4>
+            <div class="setting-item"><input type="checkbox" id="type-iwb" ${selectedTypes.includes('in-which-book') ? 'checked' : ''}> IWB</div>
+            <div class="setting-item"><input type="checkbox" id="type-con" ${selectedTypes.includes('content') ? 'checked' : ''}> Content</div>
+            <h4>Books</h4>
+            ${bookKeys.map(bk => `
+                <label class="setting-item">
+                    <input type="checkbox" class="book-chk" value="${bk}" ${selectedBooks.includes(bk) ? 'checked' : ''}> 
+                    ${bk.replace(/-/g, ' ')}
+                </label>
+            `).join('')}
+        `;
+    }
+}
+
+function saveFilter() {
+    const types = [];
+    if (document.getElementById('type-iwb').checked) types.push('in-which-book');
+    if (document.getElementById('type-con').checked) types.push('content');
+    const books = Array.from(document.querySelectorAll('.book-chk:checked')).map(el => el.value);
+    
+    localStorage.setItem(FILTER_KEY, JSON.stringify({ types, books }));
+    selectedTypes = types;
+    selectedBooks = books;
+    document.getElementById('settings-view').classList.add('hidden');
+    applyFilters();
+}
+
+init();
+// Auto-rotate if answer hasn't been shown
+setInterval(() => { if (document.getElementById('answer-face').classList.contains('hidden')) showNextQuestion(); }, 300000);
+</script>
+</body>
+</html>
