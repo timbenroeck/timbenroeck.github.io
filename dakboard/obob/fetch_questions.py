@@ -56,7 +56,7 @@ def fetch(book_id):
     body = json.dumps({
         "bookIds": [book_id],
         "questionCount": QUESTION_COUNT,
-        "questionType": "in-which-book",
+        "questionType": "both",
         "personalized": False,
         "mode": "solo",
     }).encode()

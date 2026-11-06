@@ -1,0 +1,296 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Brain Spark</title>
+<style>
+  ::-webkit-scrollbar { width: 0; background: transparent; }
+  
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+    background-color: transparent; 
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .glass-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+  }
+
+  .label { font-weight: 800; color: #00d4ff; text-transform: uppercase; font-size: 12px; letter-spacing: 1.5px; }
+  .category-tag { 
+    font-size: 10px; 
+    padding: 2px 8px; 
+    border-radius: 10px; 
+    background: rgba(255,255,255,0.1);
+    color: #ffd700;
+  }
+
+  #main-content { flex-grow: 1; position: relative; cursor: pointer; }
+
+  .card-face {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content-text { 
+    font-size: 24px; 
+    font-weight: 300; 
+    line-height: 1.4; 
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  }
+
+  .reveal-text { 
+    font-size: 26px; 
+    color: #ffd700; 
+    font-weight: 600; 
+    margin-top: 15px;
+  }
+  
+  .click-hint { 
+    position: absolute;
+    bottom: 20px;
+    font-size: 9px; 
+    color: rgba(255,255,255,0.4); 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+  }
+
+  .hidden { display: none !important; }
+
+  /* Smooth Transitions */
+  .fade-in { animation: fadeIn 0.4s ease-out; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Unique colors per type */
+  .type-riddle { border-left: 4px solid #ff007b; }
+  .type-fact { border-left: 4px solid #00ffcc; }
+  .type-joke { border-left: 4px solid #ccff00; }
+  .type-trivia { border-left: 4px solid #00d4ff; }
+</style>
+</head>
+<body>
+
+<div class="glass-container" id="widget-border">
+  <div class="header">
+    <div class="header-info">
+      <span class="label">Brain Spark</span>
+    </div>
+    <div id="cat-display" class="category-tag">Loading...</div>
+  </div>
+
+  <div id="main-content">
+    <div id="front-face" class="card-face fade-in" onclick="handleCardClick()">
+        <div id="prompt-content" class="content-text">Initializing...</div>
+        <div id="hint-text" class="click-hint">Click to reveal ↻</div>
+    </div>
+
+    <div id="back-face" class="card-face fade-in hidden" onclick="handleCardClick()">
+        <div id="reveal-content" class="reveal-text"></div>
+        <div id="extra-info" style="font-style: italic; color: #bbb; font-size: 14px; margin-top: 10px;"></div>
+        <div class="click-hint">Next Spark →</div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const library = [
+  // --- RIDDLES ---
+  { type: 'riddle', q: "What has to be broken before you can use it?", a: "An egg", extra: "Omelets require a bit of destruction." },
+  { type: 'riddle', q: "I’m tall when I’m young, and I’m short when I’m old. What am I?", a: "A candle", extra: "Or a pencil!" },
+  { type: 'riddle', q: "What month of the year has 28 days?", a: "All of them", extra: "Technically correct is the best kind of correct." },
+  { type: 'riddle', q: "What is full of holes but still holds water?", a: "A sponge", extra: "It's a physics miracle." },
+  { type: 'riddle', q: "What question can you never answer yes to?", a: "Are you asleep yet?", extra: "If you say yes, you're lying!" },
+  { type: 'riddle', q: "What is always in front of you but can’t be seen?", a: "The future", extra: "Deep thoughts for the dashboard." },
+  { type: 'riddle', q: "There’s a one-story house where everything is yellow. What color are the stairs?", a: "There are no stairs", extra: "It's a one-story house!" },
+  { type: 'riddle', q: "What can you break, even if you never pick it up or touch it?", a: "A promise", extra: "Keep 'em if you can." },
+  { type: 'riddle', q: "What goes up but never comes down?", a: "Your age", extra: "Unfortunately!" },
+  { type: 'riddle', q: "A man walks into a storm, but not a hair on his head gets wet. How?", a: "He's bald", extra: "Aerodynamic and dry." },
+  { type: 'riddle', q: "What has many teeth, but cannot bite?", a: "A comb", extra: "Don't let it near your cereal." },
+  { type: 'riddle', q: "What has one eye, but can’t see?", a: "A needle", extra: "It's very focused on its work." },
+  { type: 'riddle', q: "What has many keys but can’t open a single lock?", a: "A piano", extra: "But it can open a melody!" },
+  { type: 'riddle', q: "What can you keep after giving it to someone?", a: "Your word", extra: "The best kind of gift." },
+  { type: 'riddle', q: "What is black when it’s clean and white when it’s dirty?", a: "A chalkboard", extra: "A bit old school." },
+  { type: 'riddle', q: "I am light as a feather, yet the strongest person can’t hold me for five minutes. What am I?", a: "Breath", extra: "Try it... actually, don't." },
+  { type: 'riddle', q: "What gets wet while drying?", a: "A towel", extra: "It has one job." },
+  { type: 'riddle', q: "What has a thumb and four fingers, but is not a hand?", a: "A glove", extra: "A hand's best friend." },
+  { type: 'riddle', q: "What has a head and a tail but no body?", a: "A coin", extra: "Perfect for making decisions." },
+  { type: 'riddle', q: "Where does today come before yesterday?", a: "The dictionary", extra: "Alphabetical order wins again." },
+  { type: 'riddle', q: "What has a neck but no head?", a: "A bottle", extra: "Or a guitar!" },
+  { type: 'riddle', q: "What is so fragile that saying its name breaks it?", a: "Silence", extra: "Shhh..." },
+  { type: 'riddle', q: "What can travel all around the world while staying in the same corner?", a: "A stamp", extra: "Snail mail adventures." },
+  { type: 'riddle', q: "What has a bottom at the top?", a: "Your legs", extra: "Think about it..." },
+  { type: 'riddle', q: "What kind of band never plays music?", a: "A rubber band", extra: "Not very rhythmic." },
+
+  // --- JOKES ---
+  { type: 'joke', q: "Why don't scientists trust atoms?", a: "Because they make up everything!", extra: "Literally everything." },
+  { type: 'joke', q: "What do you call a bear with no teeth?", a: "A gummy bear", extra: "Sweet but harmless." },
+  { type: 'joke', q: "Why did the golf club join the library?", a: "It wanted to get a better drive.", extra: "And some iron-ic literature." },
+  { type: 'joke', q: "What do you call a sleeping dinosaur?", a: "A dino-snore", extra: "Extinct but loud." },
+  { type: 'joke', q: "Why did the tomato turn red?", a: "Because it saw the salad dressing!", extra: "Embarrassing!" },
+  { type: 'joke', q: "What do you call a fake noodle?", a: "An impasta", extra: "Don't trust the linguine." },
+  { type: 'joke', q: "Why did the bicycle fall over?", a: "Because it was two-tired.", extra: "It needs a kickstand nap." },
+  { type: 'joke', q: "What did the ocean say to the beach?", a: "Nothing, it just waved.", extra: "Very polite." },
+  { type: 'joke', q: "Why can't you give Elsa a balloon?", a: "Because she will 'Let it Go'.", extra: "Frozen jokes never get old." },
+  { type: 'joke', q: "What do you call a pig that knows karate?", a: "A pork chop", extra: "Hi-yah!" },
+  { type: 'joke', q: "Why was the math book sad?", a: "It had too many problems.", extra: "We feel for you, math book." },
+  { type: 'joke', q: "What did one plate say to the other?", a: "Dinner is on me!", extra: "Generous dishware." },
+  { type: 'joke', q: "Why did the student eat his homework?", a: "The teacher said it was a piece of cake.", extra: "Tasty education." },
+  { type: 'joke', q: "What do you call a snowman with a six-pack?", a: "An abdominal snowman", extra: "Cool and fit." },
+  { type: 'joke', q: "Why are ghosts such bad liars?", a: "Because you can see right through them.", extra: "Spooky honesty." },
+  { type: 'joke', q: "What do you call a fish without eyes?", a: "Fsh", extra: "Read it out loud." },
+  { type: 'joke', q: "Why did the cookie go to the doctor?", a: "Because he was feeling crumb-y.", extra: "Too much sugar?" },
+  { type: 'joke', q: "What did the zero say to the eight?", a: "Nice belt!", extra: "0 meets 8." },
+  { type: 'joke', q: "How does a scientist freshen their breath?", a: "With experi-mints!", extra: "Refreshing discovery." },
+  { type: 'joke', q: "Why did the tree go to the dentist?", a: "To get a root canal.", extra: "Barking up the wrong tree." },
+  { type: 'joke', q: "What building has the most stories?", a: "The library", extra: "Thousands of 'em." },
+  { type: 'joke', q: "Why can't a nose be 12 inches long?", a: "Because then it would be a foot.", extra: "Smelly business." },
+  { type: 'joke', q: "What did the judge say when the skunk walked in?", a: "Odor in the court!", extra: "Case closed." },
+  { type: 'joke', q: "Why did the strawberry cross the road?", a: "Its mother was in a jam.", extra: "Sweet rescue." },
+  { type: 'joke', q: "What kind of tree fits in your hand?", a: "A palm tree", extra: "Perfect for vacation." },
+
+  // --- FACTS ---
+  { type: 'fact', q: "Wombat poop is shaped like...", a: "Cubes!", extra: "It keeps it from rolling away." },
+  { type: 'fact', q: "The shortest war in history lasted...", a: "38 minutes", extra: "Between Britain and Zanzibar in 1896." },
+  { type: 'fact', q: "Cows have 'best friends' and...", a: "They get stressed when separated.", extra: "BFFs: Best Friends Forever." },
+  { type: 'fact', q: "Scotland's national animal is...", a: "The Unicorn", extra: "They take their myths seriously." },
+  { type: 'fact', q: "The heart of a shrimp is located...", a: "In its head", extra: "Talk about wearing your heart on your sleeve." },
+  { type: 'fact', q: "A 'jiffy' is an actual unit of time...", a: "1/100th of a second", extra: "Be back in a jiffy!" },
+  { type: 'fact', q: "Sloths can hold their breath longer than...", a: "Dolphins!", extra: "Up to 40 minutes underwater." },
+  { type: 'fact', q: "An octopus has three hearts and...", a: "Blue blood", extra: "And nine brains!" },
+  { type: 'fact', q: "Honeybees can flap their wings...", a: "200 times per second", extra: "That's why they buzz." },
+  { type: 'fact', q: "The Eiffel Tower can be 15 cm taller in...", a: "The Summer", extra: "Thermal expansion is real!" },
+  { type: 'fact', q: "There are more stars in the universe than...", a: "Grains of sand on Earth", extra: "Space is big. Really big." },
+  { type: 'fact', q: "Polar bear skin is actually...", a: "Black", extra: "Their fur is clear, not white!" },
+  { type: 'fact', q: "A bolt of lightning is 5x hotter than...", a: "The surface of the sun", extra: "Don't try to touch it." },
+  { type: 'fact', q: "Otters hold hands while sleeping...", a: "So they don't drift apart", extra: "Nature's cutest anchors." },
+  { type: 'fact', q: "Flamingos are only pink because...", a: "They eat shrimp", extra: "You are what you eat!" },
+  { type: 'fact', q: "Human teeth are just as strong as...", a: "Shark teeth", extra: "Keep brushing!" },
+  { type: 'fact', q: "A snail can sleep for...", a: "Three years", extra: "The ultimate nap." },
+  { type: 'fact', q: "Butterflies taste with their...", a: "Feet", extra: "Testing the flowers before landing." },
+  { type: 'fact', q: "Koalas have fingerprints that are...", a: "Indistinguishable from humans", extra: "Detective Koala is on the case." },
+  { type: 'fact', q: "Venus is the only planet that...", a: "Rotates clockwise", extra: "A bit of a rebel." },
+  { type: 'fact', q: "The moon has 'Moonquakes'...", a: "Just like Earthquakes", extra: "The ground is shaky up there too." },
+  { type: 'fact', q: "A group of crows is called...", a: "A Murder", extra: "Sounds ominous, doesn't it?" },
+  { type: 'fact', q: "Apples float because...", a: "25% of their volume is air", extra: "Perfect for bobbing." },
+  { type: 'fact', q: "The wood frog can hold its pee for...", a: "8 months!", extra: "Usually during winter hibernation." },
+  { type: 'fact', q: "Cleopatra lived closer to the iPhone than...", a: "The Pyramids", extra: "History is weirdly timed." },
+
+  // --- TRIVIA ---
+  { type: 'trivia', q: "What is the hardest natural substance?", a: "Diamond", extra: "Pure carbon, tightly packed." },
+  { type: 'trivia', q: "Which gas do plants absorb from the air?", a: "Carbon Dioxide", extra: "And they give us Oxygen!" },
+  { type: 'trivia', q: "How many bones are in the adult human body?", a: "206", extra: "Babies actually have more!" },
+  { type: 'trivia', q: "What is the largest organ of the human body?", a: "Skin", extra: "It covers about 20 square feet." },
+  { type: 'trivia', q: "What is the fastest land animal?", a: "The Cheetah", extra: "0 to 60 mph in 3 seconds." },
+  { type: 'trivia', q: "Which ocean is the largest?", a: "The Pacific", extra: "It covers 30% of Earth's surface." },
+  { type: 'trivia', q: "What is the chemical symbol for Gold?", a: "Au", extra: "From the Latin 'Aurum'." },
+  { type: 'trivia', q: "How many colors are in a rainbow?", a: "Seven", extra: "ROY G BIV!" },
+  { type: 'trivia', q: "Who painted the Mona Lisa?", a: "Leonardo da Vinci", extra: "He was also an engineer and inventor." },
+  { type: 'trivia', q: "What is the smallest planet in our solar system?", a: "Mercury", extra: "It's barely larger than our moon." },
+  { type: 'trivia', q: "What is the tallest mountain in the world?", a: "Mount Everest", extra: "29,032 feet above sea level." },
+  { type: 'trivia', q: "Which country is home to the Kangaroo?", a: "Australia", extra: "G'day mate!" },
+  { type: 'trivia', q: "How many continents are there?", a: "Seven", extra: "Asia is the largest." },
+  { type: 'trivia', q: "What is the capital of France?", a: "Paris", extra: "The City of Light." },
+  { type: 'trivia', q: "What is the main ingredient in hummus?", a: "Chickpeas", extra: "Also called garbanzo beans." },
+  { type: 'trivia', q: "What is the most spoken language in the world?", a: "English", extra: "Followed closely by Mandarin Chinese." },
+  { type: 'trivia', q: "How many strings does a standard violin have?", a: "Four", extra: "G, D, A, and E." },
+  { type: 'trivia', q: "What is the largest mammal in the world?", a: "Blue Whale", extra: "Their tongues weigh as much as an elephant!" },
+  { type: 'trivia', q: "What do you call a scientist who studies rocks?", a: "A Geologist", extra: "They rock." },
+  { type: 'trivia', q: "Which planet is famous for its rings?", a: "Saturn", extra: "The rings are mostly ice and dust." },
+  { type: 'trivia', q: "How many minutes are in a full day?", a: "1,440", extra: "Use them wisely!" },
+  { type: 'trivia', q: "What is the frozen form of water called?", a: "Ice", extra: "Brrr." },
+  { type: 'trivia', q: "Who was the first person to step on the moon?", a: "Neil Armstrong", extra: "One small step for man..." },
+  { type: 'trivia', q: "What is the primary color of an Emerald?", a: "Green", extra: "A variety of the mineral beryl." },
+  { type: 'trivia', q: "How many legs does a spider have?", a: "Eight", extra: "Insects have six; spiders are arachnids." }
+];
+
+let currentIndex = 0;
+let isRevealed = false;
+
+function init() {
+    shuffle(library);
+    showItem();
+}
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function showItem() {
+    const item = library[currentIndex];
+    isRevealed = false;
+
+    // Update Category UI
+    const catDisplay = document.getElementById('cat-display');
+    catDisplay.innerText = item.type.toUpperCase();
+    
+    // Update border color based on type
+    const border = document.getElementById('widget-border');
+    border.className = `glass-container type-${item.type}`;
+
+    // Set Text
+    document.getElementById('prompt-content').innerText = item.q;
+    document.getElementById('reveal-content').innerText = item.a;
+    document.getElementById('extra-info').innerText = item.extra || "";
+
+    // Show front, hide back
+    document.getElementById('front-face').classList.remove('hidden');
+    document.getElementById('back-face').classList.add('hidden');
+}
+
+function handleCardClick() {
+    if (!isRevealed) {
+        // Reveal the answer
+        document.getElementById('front-face').classList.add('hidden');
+        document.getElementById('back-face').classList.remove('hidden');
+        isRevealed = true;
+    } else {
+        // Move to next item
+        currentIndex++;
+        if (currentIndex >= library.length) {
+            shuffle(library);
+            currentIndex = 0;
+        }
+        showItem();
+    }
+}
+
+// Auto-rotate every 10 minutes if no one is interacting
+setInterval(() => {
+    if (!isRevealed) {
+        currentIndex = (currentIndex + 1) % library.length;
+        showItem();
+    }
+}, 600000);
+
+init();
+</script>
+</body>
+</html>
