@@ -375,62 +375,80 @@ function forceResync() {
   performSync();
 }
 
-function removeDuplicatesFast() {
+function removeMasterDuplicates() {
   let pageToken;
-  let allEvents = [];
+  let seen = {};
+  let duplicatesToDelete = [];
   
+  Logger.log("Scanning for Master event duplicates...");
+
+  // 1. Fetch without singleEvents so we get the parent recurring events
   do {
     let response = apiWithRetry(() => Calendar.Events.list(DEST_CAL_ID, {
-      maxResults: 500,
-      singleEvents: true,
+      maxResults: 2500, 
+      // singleEvents: true has been REMOVED
+      // timeMin has been REMOVED so we can catch old Master events
       pageToken: pageToken
     }));
-    if (response.items) allEvents = allEvents.concat(response.items);
+    
+    if (response.items) {
+      response.items.forEach(event => {
+        // For Master events, this is the date/time of the VERY FIRST occurrence
+        const start = event.start ? (event.start.dateTime || event.start.date) : '';
+        const summary = event.summary || '';
+        
+        const signature = `${summary}_${start}`;
+
+        if (seen[signature]) {
+          duplicatesToDelete.push(event.id);
+        } else {
+          seen[signature] = true;
+        }
+      });
+    }
     pageToken = response.nextPageToken;
   } while (pageToken);
 
-  let seen = {};
-  let duplicatesToDelete = [];
-
-  allEvents.forEach(event => {
-    const start = event.start.dateTime || event.start.date;
-    const end = event.end.dateTime || event.end.date;
-    const signature = `${event.summary}_${start}_${end}`;
-
-    if (seen[signature]) {
-      duplicatesToDelete.push(event.id);
-    } else {
-      seen[signature] = true;
-    }
-  });
-
-  Logger.log(`Found ${duplicatesToDelete.length} duplicates. Starting deletion...`);
+  Logger.log(`Found ${duplicatesToDelete.length} duplicate Master/Single events. Deleting...`);
   
+  // 2. Delete the Master events (which instantly deletes all their future instances)
   let deletedCount = 0;
-  duplicatesToDelete.forEach(id => {
+  const startTime = Date.now();
+
+  for (let i = 0; i < duplicatesToDelete.length; i++) {
+    if (Date.now() - startTime > 300000) { 
+      Logger.log(`⚠️ 5-minute limit reached. Paused after deleting ${deletedCount} events.`);
+      return; 
+    }
+
     try {
-      apiWithRetry(() => Calendar.Events.remove(DEST_CAL_ID, id));
+      apiWithRetry(() => Calendar.Events.remove(DEST_CAL_ID, duplicatesToDelete[i]));
       deletedCount++;
     } catch (e) {
-      Logger.log(`Failed to delete one event: ${e.message}`);
+      Logger.log(`Failed to delete event: ${e.message}`);
     }
-  });
+  }
 
-  Logger.log(`Cleanup complete. Removed ${deletedCount} duplicate events.`);
+  Logger.log(`✅ Cleanup complete! Removed ${deletedCount} master events. (This instantly wiped out thousands of duplicate recurring instances).`);
 }
 
-function removeDuplicatesMemorySafe() {
+function removeDuplicatesRecentOnly() {
   let pageToken;
   let seen = {};
   let duplicatesToDelete = [];
   
-  Logger.log("Scanning for duplicates (memory-safe mode)...");
+  // 1. Set the starting point to 7 days ago
+  const startDate = new Date();
+  startDate.setDate(startDate.getDate() - 7);
+  
+  Logger.log(`Scanning for duplicates from ${startDate.toDateString()} forward...`);
 
-  // 1. Process page by page so we don't hold heavy objects in memory
+  // 2. Fetch page by page, restricted by timeMin
   do {
     let response = apiWithRetry(() => Calendar.Events.list(DEST_CAL_ID, {
-      maxResults: 2500, // Fetch max allowed per page
+      maxResults: 2500, 
       singleEvents: true,
+      timeMin: startDate.toISOString(), // <-- This forces it to only look at recent/future events
       pageToken: pageToken
     }));
     
@@ -442,7 +460,6 @@ function removeDuplicatesMemorySafe() {
         const signature = `${summary}_${start}_${end}`;
 
         if (seen[signature]) {
-          // It's a duplicate! Just save the ID string (takes almost zero memory)
           duplicatesToDelete.push(event.id);
         } else {
           seen[signature] = true;
@@ -452,19 +469,16 @@ function removeDuplicatesMemorySafe() {
     pageToken = response.nextPageToken;
   } while (pageToken);
 
-  Logger.log(`Found ${duplicatesToDelete.length} duplicates. Starting deletion...`);
+  Logger.log(`Found ${duplicatesToDelete.length} recent duplicates. Starting deletion...`);
   
-  // 2. Delete with a time limit check
+  // 3. Delete with a 5-minute safety timer
   const startTime = Date.now();
   let deletedCount = 0;
   
   for (let i = 0; i < duplicatesToDelete.length; i++) {
-    // Check if we've been running for 5 minutes (300,000 ms)
-    // Apps Script hard-crashes at 6 minutes. This stops it gracefully so it doesn't fail.
     if (Date.now() - startTime > 300000) { 
-      Logger.log(`⚠️ Approaching Google's 6-minute execution limit. Paused after deleting ${deletedCount} events.`);
-      Logger.log(`➡️ PLEASE CLICK "RUN" AGAIN TO CONTINUE DELETING THE REMAINING ${duplicatesToDelete.length - deletedCount} DUPLICATES.`);
-      return; // Exit the function early
+      Logger.log(`⚠️ 5-minute limit reached. Paused after deleting ${deletedCount} events. Click "Run" again to continue.`);
+      return; 
     }
     
     try {
@@ -475,5 +489,5 @@ function removeDuplicatesMemorySafe() {
     }
   }
 
-  Logger.log(`✅ Cleanup 100% complete! Removed ${deletedCount} duplicate events.`);
+  Logger.log(`✅ Cleanup complete! Removed ${deletedCount} recent duplicate events.`);
 }
